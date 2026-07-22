@@ -1,6 +1,6 @@
 /**
  * NPC Population Analysis System
- * Frontend Application Orchestrator
+ * Frontend Application Orchestrator with Supabase Offline-First Sync
  */
 
 class PopulationApp {
@@ -18,23 +18,32 @@ class PopulationApp {
         { nin: "552-901-334", name: "Binta Suleiman", type: "Birth", date: "2026-07-21 21:55", location: "Kano City Clinic", status: "Verified" },
         { nin: "211-778-402", name: "Grace Adebayo", type: "Birth", date: "2026-07-21 19:30", location: "Ibadan Health Center", status: "Verified" },
         { nin: "990-234-118", name: "Mustafa Idris", type: "Death", date: "2026-07-21 16:10", location: "Port Harcourt Med", status: "Verified" }
-      ]
+      ],
+      supabaseUrl: "",
+      supabaseKey: "",
+      syncQueue: []
     };
 
     this.store = {};
     this.charts = {};
     this.mapScope = 'national';
+    this.supabase = null;
+    this.isOnline = navigator.onLine;
 
     this.init();
   }
 
   init() {
     this.loadStore();
+    this.initSupabase();
     this.initRouter();
     this.renderKPIs();
     this.renderTable();
     this.initCharts();
     this.initMapMouseParallax();
+    this.initNetworkListeners();
+    this.populateSettingsForm();
+    this.syncOfflineQueue();
   }
 
   // --- STORE MANAGEMENT ---
@@ -43,6 +52,10 @@ class PopulationApp {
     if (saved) {
       try {
         this.store = JSON.parse(saved);
+        // Ensure structure matches schema
+        if (!this.store.syncQueue) this.store.syncQueue = [];
+        if (!this.store.supabaseUrl) this.store.supabaseUrl = "";
+        if (!this.store.supabaseKey) this.store.supabaseKey = "";
       } catch (e) {
         this.store = { ...this.defaultBaseline };
       }
@@ -62,7 +75,159 @@ class PopulationApp {
     this.renderKPIs();
     this.renderTable();
     this.updateCharts();
+    this.populateSettingsForm();
+    this.initSupabase(); // reset connection
     this.showSuccessToast("System Reset", "The local database has been successfully reset to factory defaults.", () => {});
+  }
+
+  // --- SUPABASE CONFIGURATION & CONNECTION ---
+  initSupabase() {
+    const url = this.store.supabaseUrl;
+    const key = this.store.supabaseKey;
+
+    if (url && key && typeof supabase !== 'undefined') {
+      try {
+        this.supabase = supabase.createClient(url, key);
+        this.updateSyncIndicator(true, "Online (Connected)");
+        this.loadRemoteRecords();
+      } catch (e) {
+        console.error("Failed to initialize Supabase:", e);
+        this.supabase = null;
+        this.updateSyncIndicator(false, "Config Error");
+      }
+    } else {
+      this.supabase = null;
+      this.updateSyncIndicator(false, "Offline (Local Mode)");
+    }
+  }
+
+  saveSupabaseConfig() {
+    const url = document.getElementById("settings-sb-url").value.trim();
+    const key = document.getElementById("settings-sb-key").value.trim();
+    
+    this.store.supabaseUrl = url;
+    this.store.supabaseKey = key;
+    this.saveStore();
+    this.initSupabase();
+  }
+
+  populateSettingsForm() {
+    const urlInput = document.getElementById("settings-sb-url");
+    const keyInput = document.getElementById("settings-sb-key");
+    if (urlInput) urlInput.value = this.store.supabaseUrl || "";
+    if (keyInput) keyInput.value = this.store.supabaseKey || "";
+  }
+
+  async loadRemoteRecords() {
+    if (!this.supabase || !this.isOnline) return;
+
+    try {
+      const { data, error } = await this.supabase
+        .from('registrations')
+        .select('*')
+        .order('date', { ascending: false });
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        // Map database response to local structure
+        this.store.records = data.map(item => ({
+          nin: item.nin,
+          name: item.name,
+          type: item.type,
+          date: item.date,
+          location: item.location,
+          status: item.status || "Verified"
+        }));
+
+        // Adjust KPIs dynamically based on data counts
+        const births = this.store.records.filter(r => r.type === 'Birth').length;
+        const deaths = this.store.records.filter(r => r.type === 'Death').length;
+        
+        this.store.dailyBirths = 2841 + births;
+        this.store.dailyDeaths = 894 + deaths;
+        this.store.population = 232541894 + births - deaths;
+        
+        this.saveStore();
+        this.renderKPIs();
+        this.renderTable();
+        this.updateCharts();
+      }
+    } catch (e) {
+      console.warn("Could not load records from Supabase (falling back to cache):", e.message);
+    }
+  }
+
+  // --- NETWORK STATUS LISTENERS ---
+  initNetworkListeners() {
+    window.addEventListener("online", () => {
+      this.isOnline = true;
+      this.initSupabase();
+      this.syncOfflineQueue();
+    });
+
+    window.addEventListener("offline", () => {
+      this.isOnline = false;
+      this.supabase = null;
+      this.updateSyncIndicator(false, "Offline Mode");
+    });
+  }
+
+  updateSyncIndicator(active, text) {
+    const indicator = document.getElementById("sync-status-indicator");
+    const dot = document.getElementById("sync-status-dot");
+    const label = document.getElementById("sync-status-text");
+
+    if (!indicator) return;
+
+    if (active && this.isOnline) {
+      indicator.className = "flex items-center gap-2 px-3 py-1 bg-green-500/10 border border-green-500/30 text-green-400 rounded-full text-xs font-semibold select-none transition-all";
+      dot.className = "w-2 h-2 bg-green-400 rounded-full animate-pulse";
+      label.innerText = text;
+    } else {
+      indicator.className = "flex items-center gap-2 px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 rounded-full text-xs font-semibold select-none transition-all";
+      dot.className = "w-2 h-2 bg-yellow-400 rounded-full animate-ping";
+      label.innerText = text;
+    }
+  }
+
+  // --- OFFLINE SYNC QUEUE ENGINE ---
+  async syncOfflineQueue() {
+    if (!this.supabase || !this.isOnline || !this.store.syncQueue || this.store.syncQueue.length === 0) return;
+
+    this.updateSyncIndicator(true, "Syncing Queue...");
+    const queue = [...this.store.syncQueue];
+    const failed = [];
+
+    for (const record of queue) {
+      try {
+        const { error } = await this.supabase
+          .from('registrations')
+          .insert([{
+            nin: record.nin,
+            name: record.name,
+            type: record.type,
+            date: record.date,
+            location: record.location,
+            status: 'Verified'
+          }]);
+
+        if (error) throw error;
+      } catch (e) {
+        console.error("Sync item failed:", e);
+        failed.push(record);
+      }
+    }
+
+    this.store.syncQueue = failed;
+    this.saveStore();
+    
+    if (failed.length === 0) {
+      this.showSuccessToast("Database Synchronized", "All offline records have been successfully synchronized to Supabase Cloud.", () => {});
+      this.loadRemoteRecords();
+    } else {
+      this.updateSyncIndicator(false, `Sync Error (${failed.length} pending)`);
+    }
   }
 
   // --- ROUTER ---
@@ -111,7 +276,7 @@ class PopulationApp {
     };
 
     window.addEventListener("hashchange", handleRoute);
-    handleRoute(); // run on initial load
+    handleRoute();
   }
 
   // --- RENDER DOM ELEMENTS ---
@@ -227,7 +392,6 @@ class PopulationApp {
 
   // --- CHARTS INITIALIZATION ---
   initCharts() {
-    // 1. Age Distribution Chart
     const ctxAge = document.getElementById('ageChart');
     if (ctxAge) {
       this.charts.age = new Chart(ctxAge, {
@@ -253,7 +417,6 @@ class PopulationApp {
       });
     }
 
-    // 2. Growth Trend Timeline Chart
     const ctxTrend = document.getElementById('growthTrendChart');
     if (ctxTrend) {
       this.charts.trend = new Chart(ctxTrend, {
@@ -281,7 +444,6 @@ class PopulationApp {
       });
     }
 
-    // 3. Projections Chart
     const ctxProj = document.getElementById('projectionChart');
     if (ctxProj) {
       this.charts.proj = new Chart(ctxProj, {
@@ -316,7 +478,6 @@ class PopulationApp {
     if (this.charts.proj) this.charts.proj.update();
   }
 
-  // --- PROJECTIONS CALCULATOR MATH ENGINE ---
   calculateProjections() {
     const baseYear = parseInt(document.getElementById("proj-base-year").value) || 2026;
     const targetYear = parseInt(document.getElementById("proj-target-year").value) || 2036;
@@ -336,17 +497,14 @@ class PopulationApp {
 
     for (let yr = baseYear; yr <= targetYear; yr += step) {
       const t = yr - baseYear;
-      // Exponential population formula P(t) = P0 * e^(rt)
       const projectedValue = startPop * Math.exp(growthRate * t);
       labels.push(yr.toString());
-      dataset.push((projectedValue / 1000000).toFixed(1)); // display in millions
+      dataset.push((projectedValue / 1000000).toFixed(1));
     }
 
-    // Final exact target computation
     const finalValue = startPop * Math.exp(growthRate * (targetYear - baseYear));
     document.getElementById("proj-estimated-val").innerText = Math.round(finalValue).toLocaleString();
 
-    // Update Chart
     if (this.charts.proj) {
       this.charts.proj.data.labels = labels;
       this.charts.proj.data.datasets[0].data = dataset;
@@ -379,8 +537,8 @@ class PopulationApp {
     document.getElementById("export-modal").classList.add("hidden");
   }
 
-  // --- FORM SUBMISSIONS ---
-  handleBirthSubmit(e) {
+  // --- DATA SUBMISSIONS ---
+  async handleBirthSubmit(e) {
     e.preventDefault();
     const name = document.getElementById("birth-name").value;
     const dob = document.getElementById("birth-date").value;
@@ -394,25 +552,52 @@ class PopulationApp {
       type: "Birth",
       date: new Date().toISOString().slice(0, 16).replace("T", " "),
       location: `${lga}, ${state} State`,
-      status: "Verified"
+      status: this.supabase && this.isOnline ? "Verified" : "Pending"
     };
 
-    // Update Store State
+    // 1. Add locally
     this.store.records.unshift(record);
     this.store.population += 1;
     this.store.dailyBirths += 1;
-    this.saveStore();
 
-    // Re-render Portal
+    // 2. Queue for Sync if offline / Save locally
+    if (this.supabase && this.isOnline) {
+      try {
+        const { error } = await this.supabase
+          .from('registrations')
+          .insert([{
+            nin: record.nin,
+            name: record.name,
+            type: record.type,
+            date: record.date,
+            location: record.location,
+            status: 'Verified'
+          }]);
+        if (error) throw error;
+      } catch (err) {
+        console.warn("Direct push to Supabase failed. Saving to sync queue:", err.message);
+        this.store.syncQueue.push(record);
+        this.updateSyncIndicator(false, `Pending Sync (${this.store.syncQueue.length})`);
+      }
+    } else {
+      this.store.syncQueue.push(record);
+      this.updateSyncIndicator(false, `Offline (${this.store.syncQueue.length} pending)`);
+    }
+
+    this.saveStore();
     this.renderKPIs();
     this.renderTable();
     this.closeBirthModal();
     e.target.reset();
 
-    this.showSuccessToast("Birth Registered Successfully", `Formal record for ${name} has been synced with primary legal identity nodes.`, () => {});
+    const msg = this.supabase && this.isOnline
+      ? `Formal record for ${name} has been synced with primary cloud nodes.`
+      : `Record for ${name} saved locally. It will sync automatically when connection returns.`;
+
+    this.showSuccessToast("Birth Registered Successfully", msg, () => {});
   }
 
-  handleDeathSubmit(e) {
+  async handleDeathSubmit(e) {
     e.preventDefault();
     const name = document.getElementById("death-name").value;
     const date = document.getElementById("death-date").value;
@@ -426,22 +611,49 @@ class PopulationApp {
       type: "Death",
       date: new Date().toISOString().slice(0, 16).replace("T", " "),
       location: `${lga}, ${state} State`,
-      status: "Verified"
+      status: this.supabase && this.isOnline ? "Verified" : "Pending"
     };
 
-    // Update Store State
+    // 1. Add locally
     this.store.records.unshift(record);
     this.store.population -= 1;
     this.store.dailyDeaths += 1;
-    this.saveStore();
 
-    // Re-render Portal
+    // 2. Queue for Sync / Save locally
+    if (this.supabase && this.isOnline) {
+      try {
+        const { error } = await this.supabase
+          .from('registrations')
+          .insert([{
+            nin: record.nin,
+            name: record.name,
+            type: record.type,
+            date: record.date,
+            location: record.location,
+            status: 'Verified'
+          }]);
+        if (error) throw error;
+      } catch (err) {
+        console.warn("Direct push to Supabase failed. Saving to sync queue:", err.message);
+        this.store.syncQueue.push(record);
+        this.updateSyncIndicator(false, `Pending Sync (${this.store.syncQueue.length})`);
+      }
+    } else {
+      this.store.syncQueue.push(record);
+      this.updateSyncIndicator(false, `Offline (${this.store.syncQueue.length} pending)`);
+    }
+
+    this.saveStore();
     this.renderKPIs();
     this.renderTable();
     this.closeDeathModal();
     e.target.reset();
 
-    this.showSuccessToast("Death Registered Successfully", `Formal certificate and audit reports have been compiled for the late ${name}.`, () => {});
+    const msg = this.supabase && this.isOnline
+      ? `Formal certificate and audit reports compiled and synced for the late ${name}.`
+      : `Record for the late ${name} saved locally. It will sync automatically when connection returns.`;
+
+    this.showSuccessToast("Death Registered Successfully", msg, () => {});
   }
 
   // --- REPORT EXPORT ACTION ---
@@ -463,7 +675,7 @@ class PopulationApp {
     document.getElementById("success-modal-body").innerText = body;
     
     const actionBtn = document.getElementById("success-modal-action-btn");
-    actionBtn.onclick = actionCallback;
+    actionBtn.onclick = actionCallback || (() => this.closeSuccessModal());
 
     document.getElementById("success-modal").classList.remove("hidden");
   }
@@ -475,7 +687,10 @@ class PopulationApp {
   toggleNotifications() {
     const dot = document.getElementById("notif-dot");
     if (dot) dot.classList.add("hidden");
-    alert("Systems online. All local databases successfully verified and synchronized to the main node.");
+    const statusMsg = this.supabase && this.isOnline 
+      ? "Supabase database verified. Cloud nodes are synced in real-time."
+      : `Offline mode active. Local cache verified. ${this.store.syncQueue.length} pending records queued for next sync.`;
+    alert(`Systems online. ${statusMsg}`);
   }
 
   // --- PARALLAX EFFECT FOR MESH BACKGROUND ---
