@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NPC Migration &amp; Geographic Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --neon-cyan: #00f2fe;
+            --glass-white: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.12);
+        }
+        body {
+            background-color: #121414;
+            color: #e2e2e2;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: var(--glass-white);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+        }
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+        }
+        .neon-text {
+            text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
+        }
+        @keyframes flow {
+            from { stroke-dashoffset: 100; }
+            to { stroke-dashoffset: 0; }
+        }
+        .animate-flow {
+            stroke-dasharray: 10;
+            animation: flow 20s linear infinite;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 242, 254, 0.3);
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed": "#d6e3ff",
+                      "tertiary": "#f6f7ff",
+                      "surface-dim": "#121414",
+                      "inverse-primary": "#00696f",
+                      "tertiary-fixed": "#d9e3f9",
+                      "inverse-surface": "#e2e2e2",
+                      "primary-fixed-dim": "#00dce6",
+                      "on-error": "#690005",
+                      "error": "#ffb4ab",
+                      "tertiary-container": "#d1dbf1",
+                      "secondary-fixed-dim": "#adc7f7",
+                      "surface-container-high": "#282a2b",
+                      "on-background": "#e2e2e2",
+                      "on-primary": "#00373a",
+                      "on-secondary": "#133057",
+                      "on-tertiary": "#273141",
+                      "surface-container": "#1e2020",
+                      "background": "#121414",
+                      "surface-container-lowest": "#0c0f0f",
+                      "on-primary-fixed-variant": "#004f53",
+                      "on-error-container": "#ffdad6",
+                      "on-tertiary-container": "#566072",
+                      "error-container": "#93000a",
+                      "on-primary-container": "#006a70",
+                      "secondary": "#adc7f7",
+                      "primary": "#e0fdff",
+                      "surface-bright": "#37393a",
+                      "inverse-on-surface": "#2f3131",
+                      "secondary-container": "#2f4a72",
+                      "surface-container-low": "#1a1c1c",
+                      "on-surface-variant": "#b9cacb",
+                      "on-surface": "#e2e2e2",
+                      "on-tertiary-fixed": "#121c2c",
+                      "surface-container-highest": "#333535",
+                      "on-secondary-fixed": "#001b3c",
+                      "surface": "#121414",
+                      "surface-tint": "#00dce6",
+                      "tertiary-fixed-dim": "#bdc7dc",
+                      "on-tertiary-fixed-variant": "#3d4759",
+                      "surface-variant": "#333535",
+                      "on-secondary-fixed-variant": "#2d476f",
+                      "primary-fixed": "#6ff6ff",
+                      "on-secondary-container": "#9fb9e8",
+                      "primary-container": "#00f2fe",
+                      "outline": "#849495",
+                      "on-primary-fixed": "#002022",
+                      "outline-variant": "#3a494b"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "1.5rem",
+                      "glass-padding": "1.5rem",
+                      "container-margin": "2rem",
+                      "section-gap": "3rem"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-md": ["Outfit"],
+                      "display-lg": ["Outfit"],
+                      "headline-lg-mobile": ["Outfit"],
+                      "headline-lg": ["Outfit"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-surface font-body-md text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- Background Shader -->
+
+<!-- Side Navigation Bar -->
+<aside class="fixed left-4 top-4 bottom-4 w-64 rounded-xl bg-white/10 backdrop-blur-xl border-r border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)] flex flex-col h-full py-6 z-50">
+<div class="px-6 mb-8">
+<h1 class="font-display-lg text-display-lg text-primary-container tracking-tighter leading-none">NPC</h1>
+<p class="text-xs text-on-surface-variant/60 uppercase tracking-widest mt-1">National Data Command</p>
+</div>
+<nav class="flex-1 space-y-2 px-2">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant/70 hover:bg-white/10 hover:text-on-surface transition-all duration-300 rounded-lg active:scale-95" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant/70 hover:bg-white/10 hover:text-on-surface transition-all duration-300 rounded-lg active:scale-95" href="#">
+<span class="material-symbols-outlined">how_to_reg</span>
+<span class="font-body-md">Registrations</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-primary-container bg-white/15 border-l-4 border-primary-container shadow-[0_0_15px_rgba(0,242,254,0.4)] transition-all duration-300" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-body-md">Migration</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant/70 hover:bg-white/10 hover:text-on-surface transition-all duration-300 rounded-lg active:scale-95" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+<span class="font-body-md">Projections</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant/70 hover:bg-white/10 hover:text-on-surface transition-all duration-300 rounded-lg active:scale-95" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full bg-primary-container text-on-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(0,242,254,0.3)] hover:scale-[1.02] transition-transform active:scale-95">
+<span class="material-symbols-outlined">add</span>
+<span>New Registration</span>
+</button>
+<div class="mt-6 flex items-center gap-3 px-2">
+<div class="w-10 h-10 rounded-full border border-primary-container/30 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional high-fidelity close-up portrait of a government data administrator, with subtle glowing UI reflections on their face, set in a dark futuristic command center environment with deep teal and cyan lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAe23mkixIUWBiQPZOTkb7u7jOnCdibHnBE7bEqYzUCpv-l6WK--KfUHxdrVYKwe1e3eANEy6d9r0ihnSQz7qIXhUKRn8J4DJwfcLJ342NKFC1k0KyC5Qw0NaYt_jN1bp3FICDj20sE1Vpz8DNY284fNCrshjMlVG6X6FmPpGCOYDacMP5Rpz4nkiwkZcrqvK-_YcaKLvGJ-o_o5W9CPD_m6uONNIAvWIg7IUOdNNvZ4-0nFKtPvo7cmE6VT-fVBnCiGenX0mXPCwHi"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold truncate">Admin User</p>
+<p class="text-[10px] text-on-surface-variant/50 uppercase">Security Level 4</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-72 mr-8 pt-24 pb-12 space-y-8">
+<!-- Top App Bar -->
+<header class="fixed top-0 left-72 right-8 h-20 flex justify-between items-center bg-white/5 backdrop-blur-lg border-b border-white/10 z-40 px-4">
+<div class="flex items-center gap-6">
+<h2 class="font-headline-md text-headline-md font-bold text-primary-container">Migration Hub</h2>
+<div class="relative group">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant">search</span>
+<input class="bg-white/5 border border-white/10 rounded-full pl-10 pr-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-primary-container/50 transition-all" placeholder="Search patterns..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">schedule</span>
+</button>
+<button class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full border border-white/10">
+<span class="material-symbols-outlined text-primary-container">account_circle</span>
+<span class="text-sm font-medium">Terminal A1</span>
+</button>
+</div>
+</header>
+<!-- KPI Row -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<!-- Net Migration Rate -->
+<div class="glass-panel p-6 rounded-2xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-primary-container text-4xl" style="font-variation-settings: 'FILL' 1;">insights</span>
+</div>
+<p class="text-on-surface-variant text-sm font-label-md uppercase tracking-widest">Net Migration Rate</p>
+<div class="mt-4 flex items-baseline gap-2">
+<span class="font-headline-lg text-headline-lg text-primary-container neon-text leading-none" id="nmr-value">+14.2%</span>
+<span class="text-xs text-on-surface-variant/60">Live</span>
+</div>
+<div class="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[70%] neon-glow"></div>
+</div>
+<div class="mt-4 flex items-center gap-2 text-xs text-primary-container/80">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+<span>2.4k Increase since 00:00 GMT</span>
+</div>
+</div>
+<!-- Inbound Total -->
+<div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
+<p class="text-on-surface-variant text-sm font-label-md uppercase tracking-widest">Global Inbound</p>
+<div class="mt-4">
+<span class="font-headline-lg text-headline-lg text-white leading-none">8.2M</span>
+</div>
+<div class="mt-4 opacity-40">
+
+</div>
+</div>
+<!-- Outbound Total -->
+<div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
+<p class="text-on-surface-variant text-sm font-label-md uppercase tracking-widest">Regional Outbound</p>
+<div class="mt-4">
+<span class="font-headline-lg text-headline-lg text-white leading-none">3.1M</span>
+</div>
+<div class="mt-4 opacity-40">
+
+</div>
+</div>
+<!-- Internal Flux -->
+<div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
+<p class="text-on-surface-variant text-sm font-label-md uppercase tracking-widest">Internal Flux</p>
+<div class="mt-4">
+<span class="font-headline-lg text-headline-lg text-white leading-none">22.8M</span>
+</div>
+<div class="mt-4 flex justify-between text-xs text-on-surface-variant/60">
+<span>Urban: 85%</span>
+<span>Rural: 15%</span>
+</div>
+</div>
+</div>
+<!-- Central Pattern Visualization (Sankey/Flow Concept) -->
+<div class="glass-panel rounded-3xl overflow-hidden relative min-h-[500px] flex flex-col">
+<div class="p-8 border-b border-white/10 flex justify-between items-center">
+<div>
+<h3 class="font-headline-lg text-headline-lg">National Migration Patterns</h3>
+<p class="text-on-surface-variant">Real-time flow visualization of demographic shifts across global corridors</p>
+</div>
+<div class="flex gap-2">
+<button class="bg-primary-container/10 border border-primary-container/30 px-4 py-2 rounded-lg text-xs font-bold text-primary-container hover:bg-primary-container/20 transition-all">Export Datashard</button>
+<button class="bg-white/5 border border-white/10 px-4 py-2 rounded-lg text-xs font-bold hover:bg-white/10 transition-all">Time Slice: 24h</button>
+</div>
+</div>
+<div class="flex-1 relative flex items-center justify-center bg-black/20 p-8">
+<!-- SVG Sankey/Flow Simulation -->
+<svg class="max-w-4xl" height="100%" preserveaspectratio="xMidYMid meet" viewbox="0 0 1000 400" width="100%">
+<defs>
+<lineargradient id="cyanGrad" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" style="stop-color:rgba(0,242,254,0)"></stop>
+<stop offset="50%" style="stop-color:rgba(0,242,254,0.6)"></stop>
+<stop offset="100%" style="stop-color:rgba(0,242,254,0)"></stop>
+</lineargradient>
+</defs>
+<!-- Nodes -->
+<rect class="neon-glow" fill="#00f2fe" height="300" rx="4" width="8" x="50" y="50"></rect>
+<text fill="white" font-size="12" font-weight="bold" text-anchor="middle" x="50" y="40">ORIGIN SOURCE</text>
+<rect class="neon-glow" fill="#00f2fe" height="300" rx="4" width="8" x="942" y="50"></rect>
+<text fill="white" font-size="12" font-weight="bold" text-anchor="middle" x="942" y="40">TERMINAL DEST</text>
+<!-- Flow Lines -->
+<path d="M 58 100 C 300 100, 700 300, 942 300" fill="none" stroke="rgba(0,242,254,0.1)" stroke-width="40"></path>
+<path class="animate-flow" d="M 58 100 C 300 100, 700 300, 942 300" fill="none" stroke="url(#cyanGrad)" stroke-width="2"></path>
+<path d="M 58 200 C 300 200, 700 200, 942 200" fill="none" stroke="rgba(0,242,254,0.1)" stroke-width="60"></path>
+<path class="animate-flow" d="M 58 200 C 300 200, 700 200, 942 200" fill="none" stroke="url(#cyanGrad)" stroke-width="2" style="animation-delay: -2s;"></path>
+<path d="M 58 300 C 300 300, 700 100, 942 100" fill="none" stroke="rgba(0,242,254,0.1)" stroke-width="30"></path>
+<path class="animate-flow" d="M 58 300 C 300 300, 700 100, 942 100" fill="none" stroke="url(#cyanGrad)" stroke-width="2" style="animation-delay: -5s;"></path>
+</svg>
+<!-- Floating Data Points -->
+<div class="absolute top-1/4 left-1/3 glass-panel px-3 py-2 rounded-lg border-primary-container/20 border text-[10px] scale-90 md:scale-100">
+<p class="text-primary-container font-bold">Node Alpha-9</p>
+<p class="text-white">Active Transit: 4.2k/hr</p>
+</div>
+<div class="absolute bottom-1/4 right-1/4 glass-panel px-3 py-2 rounded-lg border-primary-container/20 border text-[10px] scale-90 md:scale-100">
+<p class="text-primary-container font-bold">Node Zeta-1</p>
+<p class="text-white">Success Rate: 99.8%</p>
+</div>
+</div>
+<div class="p-6 bg-white/5 border-t border-white/10 flex justify-around text-center">
+<div>
+<p class="text-on-surface-variant text-xs uppercase">Avg Transit Time</p>
+<p class="text-lg font-bold">42.4 Hours</p>
+</div>
+<div class="w-px h-10 bg-white/10"></div>
+<div>
+<p class="text-on-surface-variant text-xs uppercase">Primary Driver</p>
+<p class="text-lg font-bold">Economic Mobility</p>
+</div>
+<div class="w-px h-10 bg-white/10"></div>
+<div>
+<p class="text-on-surface-variant text-xs uppercase">Compliance Index</p>
+<p class="text-lg font-bold text-primary-container neon-text">0.982</p>
+</div>
+</div>
+</div>
+<!-- Records Lists Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Inbound Records -->
+<div class="glass-panel rounded-2xl flex flex-col h-[500px]">
+<div class="p-6 border-b border-white/10 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-emerald-500">login</span>
+</div>
+<h4 class="font-headline-md text-headline-md">Inbound Records</h4>
+</div>
+<span class="text-xs text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded">Active Stream</span>
+</div>
+<div class="flex-1 overflow-y-auto p-4 space-y-3">
+<!-- Record Item -->
+<div class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:border-emerald-500/30 transition-all cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold">CA</div>
+<div>
+<p class="text-sm font-bold">Canada (Toronto)</p>
+<p class="text-[10px] text-on-surface-variant uppercase">Permanent Residency</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs font-mono text-emerald-500">OCT 14, 2023</p>
+<p class="text-[10px] text-on-surface-variant uppercase">REF: NPC-29402</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:border-emerald-500/30 transition-all cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold">GB</div>
+<div>
+<p class="text-sm font-bold">United Kingdom (London)</p>
+<p class="text-[10px] text-on-surface-variant uppercase">Highly Skilled Professional</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs font-mono text-emerald-500">OCT 14, 2023</p>
+<p class="text-[10px] text-on-surface-variant uppercase">REF: NPC-29403</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:border-emerald-500/30 transition-all cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold">DE</div>
+<div>
+<p class="text-sm font-bold">Germany (Berlin)</p>
+<p class="text-[10px] text-on-surface-variant uppercase">Family Reunification</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs font-mono text-emerald-500">OCT 14, 2023</p>
+<p class="text-[10px] text-on-surface-variant uppercase">REF: NPC-29404</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:border-emerald-500/30 transition-all cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold">AE</div>
+<div>
+<p class="text-sm font-bold">UAE (Dubai)</p>
+<p class="text-[10px] text-on-surface-variant uppercase">Business Visa</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs font-mono text-emerald-500">OCT 14, 2023</p>
+<p class="text-[10px] text-on-surface-variant uppercase">REF: NPC-29405</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:border-emerald-500/30 transition-all cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold">SG</div>
+<div>
+<p class="text-sm font-bold">Singapore</p>
+<p class="text-[10px] text-on-surface-variant uppercase">Educational Intent</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs font-mono text-emerald-500">OCT 13, 2023</p>
+<p class="text-[10px] text-on-surface-variant uppercase">REF: NPC-29406</p>
+</div>
+</div>
+</div>
+<div class="p-4 bg-white/5 text-center">
+<button class="text-xs font-bold text-on-surface-variant hover:text-primary-container transition-colors uppercase tracking-widest">Load Archived Stream</button>
+</div>
+</div>
+<!-- Outbound Records -->
+<div class="glass-panel rounded-2xl flex flex-col h-[500px]">
+<div class="p-6 border-b border-white/10 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-orange-500">logout</span>
+</div>
+<h4 class="font-headline-md text-headline-md">Outbound Records</h4>
+</div>
+<span class="text-xs text-orange-500 bg-orange-500/10 px-2 py-1 rounded">Live Export</span>
+</div>
+<div class="flex-1 overflow-y-auto p-4 space-y-3">
+<!-- Record Item -->
+<div class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:border-orange-500/30 transition-all cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold">US</div>
+<div>
+<p class="text-sm font-bold">United States (NY)</p>
+<p class="text-[10px] text-on-surface-variant uppercase">Specialized Labor</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs font-mono text-orange-500">OCT 14, 2023</p>
+<p class="text-[10px] text-on-surface-variant uppercase">REF: NPC-EXT-002</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:border-orange-500/30 transition-all cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold">AU</div>
+<div>
+<p class="text-sm font-bold">Australia (Sydney)</p>
+<p class="text-[10px] text-on-surface-variant uppercase">Holiday Work Visa</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs font-mono text-orange-500">OCT 14, 2023</p>
+<p class="text-[10px] text-on-surface-variant uppercase">REF: NPC-EXT-003</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:border-orange-500/30 transition-all cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold">FR</div>
+<div>
+<p class="text-sm font-bold">France (Paris)</p>
+<p class="text-[10px] text-on-surface-variant uppercase">Creative Sector Export</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs font-mono text-orange-500">OCT 14, 2023</p>
+<p class="text-[10px] text-on-surface-variant uppercase">REF: NPC-EXT-004</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:border-orange-500/30 transition-all cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold">JP</div>
+<div>
+<p class="text-sm font-bold">Japan (Tokyo)</p>
+<p class="text-[10px] text-on-surface-variant uppercase">Tech Residency</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs font-mono text-orange-500">OCT 14, 2023</p>
+<p class="text-[10px] text-on-surface-variant uppercase">REF: NPC-EXT-005</p>
+</div>
+</div>
+</div>
+<div class="p-4 bg-white/5 text-center">
+<button class="text-xs font-bold text-on-surface-variant hover:text-orange-500 transition-colors uppercase tracking-widest">Request Log Export</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Micro-interactions Script -->
+<script>
+        // Simulating Live Ticker for NMR
+        let baseNMR = 14.242;
+        const nmrElement = document.getElementById('nmr-value');
+
+        setInterval(() => {
+            const change = (Math.random() - 0.5) * 0.01;
+            baseNMR += change;
+            nmrElement.textContent = `+${baseNMR.toFixed(3)}%`;
+            nmrElement.classList.add('transition-all', 'duration-300');
+            
+            // Random glow pulse
+            if(Math.random() > 0.8) {
+                nmrElement.classList.add('text-white');
+                setTimeout(() => nmrElement.classList.remove('text-white'), 500);
+            }
+        }, 3000);
+
+        // Simple parallax on mouse move for the central panel
+        const mainPanel = document.querySelector('.central-viz');
+        if(mainPanel) {
+            document.addEventListener('mousemove', (e) => {
+                const moveX = (e.clientX - window.innerWidth / 2) / 100;
+                const moveY = (e.clientY - window.innerHeight / 2) / 100;
+                mainPanel.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            });
+        }
+    </script>
+</body></html>

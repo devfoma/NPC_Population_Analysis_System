@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NPC Population Analysis - Success</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-bright": "#37393a",
+                    "on-tertiary-container": "#566072",
+                    "on-primary-container": "#006a70",
+                    "primary-container": "#00f2fe",
+                    "secondary-fixed": "#d6e3ff",
+                    "on-error": "#690005",
+                    "surface-container-highest": "#333535",
+                    "error": "#ffb4ab",
+                    "outline-variant": "#3a494b",
+                    "tertiary": "#f6f7ff",
+                    "secondary-container": "#2f4a72",
+                    "on-secondary-fixed": "#001b3c",
+                    "on-error-container": "#ffdad6",
+                    "error-container": "#93000a",
+                    "primary": "#e0fdff",
+                    "background": "#121414",
+                    "primary-fixed-dim": "#00dce6",
+                    "on-primary-fixed": "#002022",
+                    "on-primary": "#00373a",
+                    "surface-container-low": "#1a1c1c",
+                    "on-background": "#e2e2e2",
+                    "tertiary-fixed": "#d9e3f9",
+                    "on-surface-variant": "#b9cacb",
+                    "surface-variant": "#333535",
+                    "inverse-primary": "#00696f",
+                    "outline": "#849495",
+                    "on-secondary": "#133057",
+                    "on-tertiary": "#273141",
+                    "tertiary-fixed-dim": "#bdc7dc",
+                    "on-surface": "#e2e2e2",
+                    "inverse-on-surface": "#2f3131",
+                    "surface-container": "#1e2020",
+                    "primary-fixed": "#6ff6ff",
+                    "surface-dim": "#121414",
+                    "on-tertiary-fixed-variant": "#3d4759",
+                    "surface-tint": "#00dce6",
+                    "on-secondary-container": "#9fb9e8",
+                    "surface-container-high": "#282a2b",
+                    "surface-container-lowest": "#0c0f0f",
+                    "on-secondary-fixed-variant": "#2d476f",
+                    "tertiary-container": "#d1dbf1",
+                    "surface": "#121414",
+                    "inverse-surface": "#e2e2e2",
+                    "on-tertiary-fixed": "#121c2c",
+                    "on-primary-fixed-variant": "#004f53",
+                    "secondary": "#adc7f7",
+                    "secondary-fixed-dim": "#adc7f7"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "headline-md": ["Outfit"],
+                    "display-lg": ["Outfit"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg": ["Outfit"],
+                    "body-lg": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+        }
+        .neon-glow-strong {
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.6);
+        }
+        body {
+            background-color: #121414;
+            color: #e2e2e2;
+            overflow: hidden;
+        }
+        .mesh-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 242, 254, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(45, 71, 111, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(0, 106, 112, 0.1) 0%, transparent 60%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-background">
+<div class="mesh-gradient"></div>
+<!-- Background Content (Blurred) -->
+<div class="relative w-full h-screen flex filter blur-xl opacity-40 pointer-events-none">
+<!-- Sidebar Shell -->
+<aside class="fixed left-4 top-4 bottom-4 w-64 rounded-xl glass-panel border-r border-white/10 flex flex-col py-6">
+<div class="px-6 mb-10">
+<span class="font-display-lg text-display-lg text-primary-container tracking-tighter">NPC Portal</span>
+<p class="text-on-surface-variant/70 text-sm">National Data Command</p>
+</div>
+<nav class="flex-1 space-y-2">
+<div class="flex items-center gap-3 px-4 py-3 text-primary-container bg-white/15 border-l-4 border-primary-container shadow-[0_0_15px_rgba(0,242,254,0.4)]">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-on-surface-variant/70">
+<span class="material-symbols-outlined">how_to_reg</span>
+<span>Registrations</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-on-surface-variant/70">
+<span class="material-symbols-outlined">map</span>
+<span>Migration</span>
+</div>
+</nav>
+</aside>
+<!-- Main Content Area Shell -->
+<main class="ml-80 mt-24 p-8 w-full max-w-7xl">
+<div class="grid grid-cols-12 gap-6">
+<!-- Analysis Detail Mockup -->
+<div class="col-span-12 glass-panel p-8 rounded-2xl">
+<h1 class="font-headline-lg text-headline-lg mb-6">Population Trend Analysis 2024</h1>
+<div class="grid grid-cols-3 gap-6 mb-8">
+<div class="glass-panel p-6 rounded-xl border-l-4 border-primary-container">
+<p class="text-on-surface-variant text-sm">Total Projection</p>
+<h2 class="font-headline-md text-headline-md text-primary-container">218.4M</h2>
+</div>
+<div class="glass-panel p-6 rounded-xl">
+<p class="text-on-surface-variant text-sm">Growth Rate</p>
+<h2 class="font-headline-md text-headline-md">2.4%</h2>
+</div>
+<div class="glass-panel p-6 rounded-xl">
+<p class="text-on-surface-variant text-sm">Active Records</p>
+<h2 class="font-headline-md text-headline-md">1.02B</h2>
+</div>
+</div>
+<div class="h-64 w-full glass-panel rounded-xl flex items-center justify-center">
+<span class="text-on-surface-variant/30">Detailed Geospatial Data Grid Rendering...</span>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Success Modal Overlay -->
+<div class="fixed inset-0 z-50 flex items-center justify-center px-4">
+<!-- Backdrop Blur darkening -->
+<div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+<!-- The Modal -->
+<div class="relative w-full max-w-lg glass-panel rounded-3xl p-10 text-center shadow-[0_20px_40px_rgba(0,0,0,0.5)] overflow-hidden animate-in fade-in zoom-in duration-500">
+<!-- Atmospheric Glow behind the icon -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary-container/10 blur-[60px] rounded-full"></div>
+<!-- Header Icon Section -->
+<div class="relative mb-8">
+<div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-primary-container/20 border border-primary-container/40 neon-glow">
+<span class="material-symbols-outlined text-primary-container !text-5xl" style="font-variation-settings: 'FILL' 1, 'wght' 600;">check_circle</span>
+</div>
+</div>
+<!-- Content Section -->
+<div class="relative space-y-4">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Report Exported Successfully</h2>
+<p class="font-body-md text-on-surface-variant leading-relaxed px-4">
+                    Your Analytical Report <span class="text-primary-container font-mono font-bold">(#NPC-2024-08A)</span> has been generated and is ready for download.
+                </p>
+</div>
+<!-- Actions Section -->
+<div class="relative mt-10 space-y-4">
+<button class="group w-full py-4 px-6 bg-primary-container text-on-primary font-label-md text-label-md rounded-xl flex items-center justify-center gap-3 neon-glow hover:neon-glow-strong transition-all duration-300 active:scale-95">
+<span class="material-symbols-outlined text-xl">download</span>
+                    Download PDF
+                </button>
+<button class="w-full py-4 px-6 bg-white/5 hover:bg-white/10 text-on-surface font-label-md text-label-md rounded-xl border border-white/10 transition-all duration-300 active:scale-95">
+                    Back to Dashboard
+                </button>
+</div>
+<!-- Success Visual Accent -->
+<div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-container to-transparent opacity-50"></div>
+</div>
+</div>
+<!-- Mini interaction script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    console.log('Action triggered: ' + btn.innerText.trim());
+                    // Placeholder for actual navigation or download logic
+                });
+            });
+
+            // Optional: Subtle parallax on the mesh background
+            document.addEventListener('mousemove', (e) => {
+                const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+                const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+                document.querySelector('.mesh-gradient').style.transform = `translate(${moveX}px, ${moveY}px)`;
+            });
+        });
+    </script>
+</body></html>

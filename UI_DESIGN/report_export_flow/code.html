@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Demographix AI | Analysis Insight</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Outfit:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#9fb9e8",
+                    "surface-container-lowest": "#0c0f0f",
+                    "secondary": "#adc7f7",
+                    "on-error": "#690005",
+                    "on-error-container": "#ffdad6",
+                    "inverse-primary": "#00696f",
+                    "secondary-fixed": "#d6e3ff",
+                    "surface-dim": "#121414",
+                    "primary": "#e0fdff",
+                    "surface-container": "#1e2020",
+                    "primary-container": "#00f2fe",
+                    "on-tertiary-fixed": "#121c2c",
+                    "on-primary-fixed-variant": "#004f53",
+                    "surface-container-high": "#282a2b",
+                    "primary-fixed-dim": "#00dce6",
+                    "on-secondary-fixed-variant": "#2d476f",
+                    "on-secondary-fixed": "#001b3c",
+                    "tertiary-container": "#d1dbf1",
+                    "primary-fixed": "#6ff6ff",
+                    "error-container": "#93000a",
+                    "surface-variant": "#333535",
+                    "on-background": "#e2e2e2",
+                    "inverse-on-surface": "#2f3131",
+                    "outline": "#849495",
+                    "secondary-fixed-dim": "#adc7f7",
+                    "on-primary-fixed": "#002022",
+                    "surface-tint": "#00dce6",
+                    "on-primary": "#00373a",
+                    "surface-container-highest": "#333535",
+                    "tertiary-fixed-dim": "#bdc7dc",
+                    "surface-bright": "#37393a",
+                    "tertiary-fixed": "#d9e3f9",
+                    "on-tertiary": "#273141",
+                    "on-tertiary-container": "#566072",
+                    "on-secondary": "#133057",
+                    "on-surface": "#e2e2e2",
+                    "tertiary": "#f6f7ff",
+                    "on-tertiary-fixed-variant": "#3d4759",
+                    "inverse-surface": "#e2e2e2",
+                    "background": "#121414",
+                    "surface-container-low": "#1a1c1c",
+                    "on-surface-variant": "#b9cacb",
+                    "on-primary-container": "#006a70",
+                    "error": "#ffb4ab",
+                    "secondary-container": "#2f4a72",
+                    "surface": "#121414",
+                    "outline-variant": "#3a494b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "section-gap": "3rem",
+                    "container-margin": "2rem",
+                    "gutter": "1.5rem",
+                    "glass-padding": "1.5rem"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Outfit"],
+                    "headline-lg-mobile": ["Outfit"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Outfit"],
+                    "display-lg": ["Outfit"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0c0f0f;
+            color: #e2e2e2;
+            overflow-x: hidden;
+        }
+        .mesh-gradient {
+            background: radial-gradient(at 0% 0%, #001b3c 0%, transparent 50%),
+                        radial-gradient(at 100% 0%, #2d3748 0%, transparent 50%),
+                        radial-gradient(at 100% 100%, #00373a 0%, transparent 50%),
+                        radial-gradient(at 0% 100%, #133057 0%, transparent 50%),
+                        radial-gradient(at 50% 50%, #0c0f0f 0%, transparent 100%);
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .glow-accent {
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .radial-progress {
+            transform: rotate(-90deg);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md selection:bg-primary-container selection:text-on-primary">
+<div class="mesh-gradient"></div>
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/10 dark:bg-surface-container/10 backdrop-blur-md flex justify-between items-center px-container-margin py-4 w-full border-b border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)] blur-sm">
+<div class="flex items-center gap-6">
+<span class="font-headline-md text-headline-md font-bold text-primary-container">Demographix AI</span>
+<div class="hidden md:flex gap-8">
+<a class="text-primary-container font-bold border-b-2 border-primary-container font-label-md text-label-md py-1" href="#">Dashboard</a>
+<a class="text-on-surface-variant hover:bg-white/5 transition-colors font-label-md text-label-md py-1" href="#">Analytics</a>
+<a class="text-on-surface-variant hover:bg-white/5 transition-colors font-label-md text-label-md py-1" href="#">Reports</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="bg-white/5 border border-white/10 rounded-full pl-10 pr-4 py-2 text-label-md focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Search census data..." type="text"/>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-white/5 p-2 rounded-full active:scale-95 duration-200">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-white/5 p-2 rounded-full active:scale-95 duration-200">help</button>
+<img alt="Administrator Profile" class="w-10 h-10 rounded-full border-2 border-primary-container/30 object-cover" data-alt="A professional high-resolution headshot of a government data administrator with subtle blue office lighting in the background, sharp focus, clean corporate aesthetic, 8k quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7EV_Ih0vPD_v8wHc1iJ9fXfGx-_4f-cKTjBRUaqhUQtiiSxEBbULaDndmNMhfIgCc_4dR32juUYI4BxfBUCeRaP31ln7nKTCcrCFcv4wba8Ng--cU-U3MsN1w9a2XgV5TeTelvQkJrb4AOPLG6sxOqyuSUTuRk4-4h5a4LznysxkaxrItqlAjsxMLUsO7fgei9quXRiWJs4Tyc9CY4J2k828b4kcS4jTBrZ8osyx5R8QBSoMGTFxIJXtfMffZoUaQjF5zSifsXPf3"/>
+</div>
+</nav>
+<!-- SideNavBar (Hidden on Mobile) -->
+<aside class="fixed left-4 top-24 bottom-4 w-64 rounded-xl bg-white/8 dark:bg-surface-container/8 backdrop-blur-xl flex flex-col h-full p-glass-padding gap-4 border-r border-white/12 shadow-[0_0_15px_rgba(0,242,254,0.2)] hidden md:flex blur-sm">
+<div class="flex flex-col items-center mb-6">
+<img alt="National Population Commission Logo" class="w-16 h-16 mb-2" data-alt="A futuristic geometric logo of a National Population Commission, featuring abstract interconnected nodes representing data points, vibrant neon cyan colors on a transparent background, high-tech minimalist style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbSU6ZJQR7r5Y7_V8_3k3uAMF0WsHB_AxKfLSLEiKAKceo8mR1tWv9istFWX3xwr6lsVOWmmbtNtwvc4mTtginOxg5ejMexnbrE_s2zFEuVu-o0gFBS9gAmSVcBRvq2uwzEwUdvx-xBrK4O2OOTUyAjVhWRo_Jn-zMFYa0Q_cNsXXQoby_13NLwuvRUZZQ0SYCgEyIDEdtagon5Nrs0UVNU9sxEVmyZYmbpXmk7LPs3P7zIAA4hszM-YmqDTAtS6TXwm4qSYDb5ycx"/>
+<h2 class="font-headline-md text-headline-md font-bold text-primary-container">NPC Portal</h2>
+<p class="text-on-surface-variant text-label-sm">National Analysis</p>
+</div>
+<nav class="flex flex-col gap-2 flex-grow">
+<a class="flex items-center gap-3 bg-white/15 text-primary-container rounded-lg p-3 border-l-4 border-primary-container shadow-[0_0_15px_rgba(0,242,254,0.4)] transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant p-3 hover:bg-white/10 hover:text-on-surface transition-all duration-300 active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-md">Census Data</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant p-3 hover:bg-white/10 hover:text-on-surface transition-all duration-300 active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="swap_calls">swap_calls</span>
+<span class="font-label-md">Migration</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant p-3 hover:bg-white/10 hover:text-on-surface transition-all duration-300 active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+<span class="font-label-md">Projections</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant p-3 hover:bg-white/10 hover:text-on-surface transition-all duration-300 active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md">Settings</span>
+</a>
+</nav>
+<button class="bg-primary-container text-on-primary font-label-md py-3 rounded-lg flex items-center justify-center gap-2 glow-accent hover:brightness-110 active:scale-95 transition-all" id="export-report-trigger">
+<span class="material-symbols-outlined" data-icon="file_download">file_download</span>
+<span>Export Report</span>
+</button>
+<div class="mt-auto border-t border-white/10 pt-4 flex flex-col gap-1">
+<a class="flex items-center gap-3 text-on-surface-variant p-3 hover:text-on-surface text-label-md" href="#"><span class="material-symbols-outlined">contact_support</span> Support</a>
+<a class="flex items-center gap-3 text-on-surface-variant p-3 hover:text-on-surface text-label-md" href="#"><span class="material-symbols-outlined">logout</span> Logout</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-28 pb-12 px-4 md:ml-72 md:pr-12 blur-sm">
+<!-- Action Header -->
+<div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+<div>
+<button class="flex items-center gap-2 text-primary-container hover:text-white transition-colors mb-2 font-label-md">
+<span class="material-symbols-outlined">arrow_back</span>
+                    Back to Dashboard
+                </button>
+<h1 class="font-display-lg text-display-lg text-primary">Analysis Insight</h1>
+</div>
+<div class="flex gap-3">
+<div class="glass-card px-4 py-2 rounded-lg flex items-center gap-2 border border-white/20">
+<span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+<span class="text-label-sm font-semibold">AI MODEL ACTIVE</span>
+</div>
+<div class="glass-card px-4 py-2 rounded-lg flex items-center gap-2 border border-white/20">
+<span class="text-label-sm font-semibold">LAST SYNC: 12M AGO</span>
+</div>
+</div>
+</div>
+<!-- Executive Summary Card -->
+<section class="glass-card rounded-2xl p-glass-padding mb-gutter relative overflow-hidden">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-container/10 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
+<div class="relative z-10">
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-headline-lg text-headline-lg flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">insights</span>
+                        Executive Summary
+                    </h2>
+<span class="text-primary-container font-label-md bg-white/5 px-3 py-1 rounded-full">Report #NPC-2024-08A</span>
+</div>
+<div class="grid lg:grid-cols-3 gap-gutter">
+<div class="lg:col-span-2">
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed mb-6">
+                            Current trends indicate a <span class="text-primary font-bold">2.4% annual population growth</span>, significantly outpacing infrastructure deployment in Tier-2 urban hubs. Projections suggest a critical resource deficit by Q3 2026 if development incentives are not realigned.
+                        </p>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<div class="p-4 rounded-xl border border-white/10 bg-white/5">
+<p class="text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Growth Index</p>
+<p class="font-headline-md text-headline-md text-primary-container">Critical</p>
+</div>
+<div class="p-4 rounded-xl border border-white/10 bg-white/5">
+<p class="text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Readiness Score</p>
+<p class="font-headline-md text-headline-md text-primary-container">64/100</p>
+</div>
+<div class="p-4 rounded-xl border border-white/10 bg-white/5">
+<p class="text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Forecast Risk</p>
+<p class="font-headline-md text-headline-md text-primary-container">High</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<div class="glass-card p-4 rounded-xl border-l-4 border-primary-container">
+<p class="text-label-md font-bold mb-1">AI Recommendation</p>
+<p class="text-label-sm text-on-surface-variant">Accelerate healthcare expansion in the Northern corridor by 14% to mitigate pediatric service shortages.</p>
+</div>
+<div class="glass-card p-4 rounded-xl border-l-4 border-secondary">
+<p class="text-label-md font-bold mb-1">Data Confidence</p>
+<p class="text-label-sm text-on-surface-variant">Model trained on 450M census points. Confidence level 98.2% based on latest migration patterns.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Detailed Widgets Bento Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter mb-gutter">
+<!-- Urbanization Pressure Index (4 columns) -->
+<div class="lg:col-span-4 glass-card rounded-2xl p-glass-padding flex flex-col items-center justify-center min-h-[400px]">
+<h3 class="font-headline-md text-headline-md mb-8 text-center">Urbanization Pressure</h3>
+<div class="relative w-48 h-48 flex items-center justify-center">
+<svg class="radial-progress w-full h-full" viewbox="0 0 100 100">
+<circle class="text-white/10" cx="50" cy="50" fill="transparent" r="42" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary-container glow-accent" cx="50" cy="50" fill="transparent" r="42" stroke="currentColor" stroke-dasharray="264" stroke-dashoffset="66" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-display-lg text-primary text-4xl">75%</span>
+<span class="text-label-sm text-on-surface-variant">High Strain</span>
+</div>
+</div>
+<p class="mt-8 text-center text-label-md text-on-surface-variant">Pressure on public utilities has increased by <span class="text-primary-container">12%</span> in the last 180 days.</p>
+</div>
+<!-- Resource Allocation Forecast (8 columns) -->
+<div class="lg:col-span-8 glass-card rounded-2xl p-glass-padding min-h-[400px]">
+<div class="flex items-center justify-between mb-8">
+<h3 class="font-headline-md text-headline-md">Resource Allocation Forecast</h3>
+<div class="flex gap-2">
+<button class="bg-white/10 px-3 py-1 rounded-md text-label-sm hover:bg-white/20 transition-all">2024</button>
+<button class="bg-primary-container/20 text-primary-container px-3 py-1 rounded-md text-label-sm border border-primary-container/50">2030 Proj.</button>
+</div>
+</div>
+<div class="space-y-8">
+<!-- Healthcare -->
+<div class="space-y-2">
+<div class="flex justify-between font-label-md">
+<span>Healthcare Facilities</span>
+<span class="text-primary-container">+42.5% needed</span>
+</div>
+<div class="h-3 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary-container to-secondary w-[85%] rounded-full relative">
+<div class="absolute right-0 top-0 bottom-0 w-4 bg-white/30 blur-sm"></div>
+</div>
+</div>
+</div>
+<!-- Education -->
+<div class="space-y-2">
+<div class="flex justify-between font-label-md">
+<span>Education Capacity</span>
+<span class="text-primary-container">+28.1% needed</span>
+</div>
+<div class="h-3 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary-container to-secondary w-[62%] rounded-full relative">
+<div class="absolute right-0 top-0 bottom-0 w-4 bg-white/30 blur-sm"></div>
+</div>
+</div>
+</div>
+<!-- Energy -->
+<div class="space-y-2">
+<div class="flex justify-between font-label-md">
+<span>Energy Grid Load</span>
+<span class="text-primary-container">+56.9% needed</span>
+</div>
+<div class="h-3 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary-container to-secondary w-[92%] rounded-full relative">
+<div class="absolute right-0 top-0 bottom-0 w-4 bg-white/30 blur-sm"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Regional Hotspot Analysis -->
+<section class="mb-gutter">
+<h3 class="font-headline-lg text-headline-lg mb-6 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container">location_on</span>
+                Regional Hotspot Analysis
+            </h3>
+<div class="grid md:grid-cols-3 gap-gutter">
+<div class="glass-card rounded-2xl overflow-hidden flex flex-col group transition-transform hover:scale-[1.02] duration-300">
+<div class="h-40 relative bg-cover bg-center" data-alt="A futuristic topographical satellite map of a high-growth urban center at night, with glowing electric blue activity nodes and data connection lines, dark navy and teal color scheme, highly detailed 3D mapping style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBALYsR8bT0u2X-KNWcvkGP7VWrTPgyswjs2HLVscRlT4Irp7NkiMZvnov4ZQCycmSJSIkICkXr8cXVhvogYQt70euPKjGbFckH5sDgy_XY37W9z-KHJHdyfUDKO_mcR0ncLMJV12NvI3SvaCIIfJ1On1eXM0-9AusVQVibuBeIVQUAH-XXGMWoYuQQfhbPXnOdeyN-gqZWEBYwU22XdJeaT53H1qHwVvQffpkvgAgiPmxO_3FhLIiiQU5pbnQ7_xpgEByptaK3oV2v')">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+<span class="absolute top-4 right-4 bg-red-500/80 backdrop-blur-md px-2 py-1 rounded text-label-sm font-bold">CRITICAL GROWTH</span>
+</div>
+<div class="p-6">
+<h4 class="font-headline-md text-headline-md mb-2">Lagos-Ibadan Corridor</h4>
+<p class="text-label-sm text-on-surface-variant mb-4">Risk Factors: Water scarcity, Traffic gridlock, Housing shortage.</p>
+<div class="flex justify-between items-center pt-4 border-t border-white/10">
+<span class="text-primary-container font-bold">+18% MoM</span>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-white transition-colors">chevron_right</button>
+</div>
+</div>
+</div>
+<div class="glass-card rounded-2xl overflow-hidden flex flex-col group transition-transform hover:scale-[1.02] duration-300">
+<div class="h-40 relative bg-cover bg-center" data-alt="A digital rendering of a modern city expansion area with glowing grid lines showing planned infrastructure, surrounded by dark lush green landscapes, neon cyan lighting, futuristic architectural planning visualization." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB-IIaoN7zEc0nRDQQCrTB5QmJWn7ibw_wb6_ux55D_E6lr4Jv6tT0vxpggy6oaW_0c9o70J4h-qmYsvzqzjuBfSLxRUZ76k17wEUIU1TI4gURoaNpLabwYVgNDIqlzAakYCWvN4fAavDmjfiqLa9YAvdnpHR0kTMi5eHkAsFYDPy1uaJJsJ_1aIG6Mii_pkErMf5zsy-fpndme0AElUBGIcQ9JZ11HnWNqGH1DLlRuNnWuVTv4aANYaDoKRiEDiLdPqgBxyjFKjRos')">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+<span class="absolute top-4 right-4 bg-yellow-500/80 backdrop-blur-md px-2 py-1 rounded text-label-sm font-bold">MODERATE GROWTH</span>
+</div>
+<div class="p-6">
+<h4 class="font-headline-md text-headline-md mb-2">Abuja Tech Hub</h4>
+<p class="text-label-sm text-on-surface-variant mb-4">Risk Factors: Energy instability, Skill-gap migration.</p>
+<div class="flex justify-between items-center pt-4 border-t border-white/10">
+<span class="text-primary-container font-bold">+7.4% MoM</span>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-white transition-colors">chevron_right</button>
+</div>
+</div>
+</div>
+<div class="glass-card rounded-2xl overflow-hidden flex flex-col group transition-transform hover:scale-[1.02] duration-300">
+<div class="h-40 relative bg-cover bg-center" data-alt="Abstract 3D heat map visualization of a delta region with deep oranges and electric blues indicating population density spikes, floating above a dark reflective surface, high-tech analytic style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAyN_1ImjZ66Lbn1vYajl6cZCb4heu9oET56LGLLOolwgCZ35wBK8a1r-SfVQwgSG4-Opd-ESEfTrerzlmAFxHsmYmnH4oteL1B_bg5qIi8aOxOZ1GRGfqlXwXkKXIruA35dNw-XiN1IbVoTWRc-SmWM-4SZVSt8E7RvufBQHYvN41h8SnDmQxHIBBDaAE3Puliau-8USergSgD_SgquOfI2Zuzu_2IderYgS6SeB7VU08JFoeGj2sndEM9pVq66iP8ySB3_E5mCPgP')">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+<span class="absolute top-4 right-4 bg-primary-container/80 backdrop-blur-md px-2 py-1 rounded text-label-sm font-bold text-on-primary-container">STABLE GROWTH</span>
+</div>
+<div class="p-6">
+<h4 class="font-headline-md text-headline-md mb-2">Port Harcourt Hub</h4>
+<p class="text-label-sm text-on-surface-variant mb-4">Risk Factors: Environmental impact, Industrial displacement.</p>
+<div class="flex justify-between items-center pt-4 border-t border-white/10">
+<span class="text-primary-container font-bold">+3.2% MoM</span>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-white transition-colors">chevron_right</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Policy Recommendations Section -->
+<section>
+<h3 class="font-headline-lg text-headline-lg mb-6 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container">gavel</span>
+                Policy Recommendations
+            </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<button class="glass-card p-6 rounded-2xl text-left border-l-4 border-primary-container hover:bg-white/15 transition-all group">
+<span class="material-symbols-outlined text-primary-container mb-4 block text-3xl">agriculture</span>
+<h5 class="font-bold mb-2">Incentivize Rural Development</h5>
+<p class="text-label-sm text-on-surface-variant group-hover:text-white">Implement tax breaks for industrial shifts to de-congest urban hubs.</p>
+</button>
+<button class="glass-card p-6 rounded-2xl text-left border-l-4 border-primary-container hover:bg-white/15 transition-all group">
+<span class="material-symbols-outlined text-primary-container mb-4 block text-3xl">child_care</span>
+<h5 class="font-bold mb-2">Expand Pediatric Infrastructure</h5>
+<p class="text-label-sm text-on-surface-variant group-hover:text-white">Deploy 40+ mobile clinics in high-birthrate rural zones.</p>
+</button>
+<button class="glass-card p-6 rounded-2xl text-left border-l-4 border-primary-container hover:bg-white/15 transition-all group">
+<span class="material-symbols-outlined text-primary-container mb-4 block text-3xl">school</span>
+<h5 class="font-bold mb-2">Skill-Based Urban Zoning</h5>
+<p class="text-label-sm text-on-surface-variant group-hover:text-white">Align zoning with educational output to match labor supply.</p>
+</button>
+<button class="glass-card p-6 rounded-2xl text-left border-l-4 border-primary-container hover:bg-white/15 transition-all group">
+<span class="material-symbols-outlined text-primary-container mb-4 block text-3xl">bolt</span>
+<h5 class="font-bold mb-2">Decentralized Power Grid</h5>
+<p class="text-label-sm text-on-surface-variant group-hover:text-white">Leverage solar micro-grids for informal urban settlements.</p>
+</button>
+</div>
+</section>
+</main>
+<footer class="md:ml-72 px-container-margin py-8 text-on-surface-variant border-t border-white/10 flex justify-between items-center text-label-sm">
+<span>© 2024 National Population Commission | Demographix AI</span>
+<div class="flex gap-6">
+<a class="hover:text-primary-container" href="#">Privacy Policy</a>
+<a class="hover:text-primary-container" href="#">Audit Logs</a>
+<a class="hover:text-primary-container" href="#">System Status</a>
+</div>
+</footer>
+<script>
+        // Micro-interactions for radial gauge
+        document.addEventListener('DOMContentLoaded', () => {
+            const gauge = document.querySelector('.radial-progress circle:last-child');
+            if (gauge) {
+                // Initial animation
+                gauge.style.strokeDashoffset = '264';
+                setTimeout(() => {
+                    gauge.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                    gauge.style.strokeDashoffset = '66'; // 75% of 264
+                }, 500);
+            }
+
+            // Hover effects for policy cards
+            const policyCards = document.querySelectorAll('.glass-card.group');
+            policyCards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-5px)';
+                    card.style.boxShadow = '0 10px 30px rgba(0, 242, 254, 0.1)';
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0)';
+                    card.style.boxShadow = 'none';
+                });
+            });
+        });
+    </script>
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4" id="export-modal">
+<div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+<div class="relative w-full max-w-lg glass-card rounded-2xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/20 overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-container/10 blur-[40px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-1">Export Analytical Report</h2>
+<p class="text-on-surface-variant text-body-md">Generate a high-fidelity PDF document for executive review.</p>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-white">close</button>
+</div>
+<div class="space-y-4 mb-8">
+<label class="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all cursor-pointer group">
+<input checked="" class="w-4 h-4 text-primary-container focus:ring-primary-container bg-transparent border-white/20" name="export-type" type="radio"/>
+<div class="flex-grow">
+<p class="font-bold">Complete Summary</p>
+<p class="text-label-sm text-on-surface-variant">Full executive summary, all charts, and regional analysis.</p>
+</div>
+</label>
+<label class="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all cursor-pointer group">
+<input class="w-4 h-4 text-primary-container focus:ring-primary-container bg-transparent border-white/20" name="export-type" type="radio"/>
+<div class="flex-grow">
+<p class="font-bold">Charts &amp; Graphs Only</p>
+<p class="text-label-sm text-on-surface-variant">Visual data representations without detailed text analysis.</p>
+</div>
+</label>
+<label class="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all cursor-pointer group">
+<input class="w-4 h-4 text-primary-container focus:ring-primary-container bg-transparent border-white/20" name="export-type" type="radio"/>
+<div class="flex-grow">
+<p class="font-bold">Raw Data Table</p>
+<p class="text-label-sm text-on-surface-variant">Tabular census data for external spreadsheet processing.</p>
+</div>
+</label>
+</div>
+<div class="flex flex-col gap-3">
+<button class="w-full bg-primary-container text-on-primary font-bold py-4 rounded-xl flex items-center justify-center gap-2 glow-accent hover:brightness-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined">picture_as_pdf</span>
+          Print PDF
+        </button>
+<button class="w-full py-3 text-on-surface-variant hover:text-white transition-colors font-label-md">Cancel</button>
+</div>
+</div>
+</div>
+</div></body></html>
