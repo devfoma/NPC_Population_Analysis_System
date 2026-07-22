@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>NPC Population Analysis Portal</title>
+  <!-- Tailwind CSS Engine -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Google Fonts & Material Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <!-- Chart.js for premium dynamic charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="index.css"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-dim": "#121414",
+            "inverse-primary": "#00696f",
+            "inverse-surface": "#e2e2e2",
+            "primary-fixed-dim": "#00dce6",
+            "on-error": "#690005",
+            "error": "#ffb4ab",
+            "on-background": "#e2e2e2",
+            "on-primary": "#00373a",
+            "on-secondary": "#133057",
+            "surface-container": "#1e2020",
+            "background": "#121414",
+            "on-primary-container": "#006a70",
+            "secondary": "#adc7f7",
+            "primary": "#e0fdff",
+            "surface-bright": "#37393a",
+            "secondary-container": "#2f4a72",
+            "surface-container-low": "#1a1c1c",
+            "on-surface-variant": "#b9cacb",
+            "on-surface": "#e2e2e2",
+            "surface-container-highest": "#333535",
+            "surface": "#121414",
+            "surface-tint": "#00dce6",
+            "primary-fixed": "#6ff6ff",
+            "primary-container": "#00f2fe",
+            "outline": "#849495",
+            "on-primary-fixed": "#002022",
+            "outline-variant": "#3a494b"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "gutter": "1.5rem",
+            "glass-padding": "1.5rem",
+            "container-margin": "2rem",
+            "section-gap": "3rem"
+          },
+          fontFamily: {
+            "body-md": ["Inter"],
+            "headline-md": ["Outfit"],
+            "display-lg": ["Outfit"]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="font-body-md text-on-surface bg-background">
+  <!-- WebGL/Dynamic background shader simulation -->
+  <div class="mesh-gradient-glow" id="mesh-glow"></div>
+
+  <div class="flex min-h-screen relative z-10">
+    <!-- Navigation Sidebar -->
+    <aside class="fixed left-4 top-4 bottom-4 w-64 rounded-xl bg-white/10 backdrop-blur-xl border-r border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)] flex flex-col py-6 z-50">
+      <div class="px-6 mb-10 flex flex-col">
+        <span class="font-display-lg text-2xl font-extrabold text-primary-container tracking-tighter">NPC Portal</span>
+        <span class="font-body-md text-xs text-on-surface-variant/70 -mt-1">National Data Command</span>
+      </div>
+      
+      <nav class="flex-1 space-y-2 px-2" id="sidebar-nav">
+        <a class="nav-item flex items-center gap-3 px-4 py-3 text-primary-container bg-white/15 border-l-4 border-primary-container shadow-[0_0_15px_rgba(0,242,254,0.4)] transition-all duration-300 rounded-r-lg" href="#dashboard" data-target="dashboard">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span class="font-body-md text-sm">Dashboard</span>
+        </a>
+        <a class="nav-item flex items-center gap-3 px-4 py-3 text-on-surface-variant/70 hover:bg-white/10 hover:text-on-surface transition-all duration-300 rounded-lg" href="#registrations" data-target="registrations">
+          <span class="material-symbols-outlined">how_to_reg</span>
+          <span class="font-body-md text-sm">Registrations</span>
+        </a>
+        <a class="nav-item flex items-center gap-3 px-4 py-3 text-on-surface-variant/70 hover:bg-white/10 hover:text-on-surface transition-all duration-300 rounded-lg" href="#migration" data-target="migration">
+          <span class="material-symbols-outlined">map</span>
+          <span class="font-body-md text-sm">Migration</span>
+        </a>
+        <a class="nav-item flex items-center gap-3 px-4 py-3 text-on-surface-variant/70 hover:bg-white/10 hover:text-on-surface transition-all duration-300 rounded-lg" href="#projections" data-target="projections">
+          <span class="material-symbols-outlined">trending_up</span>
+          <span class="font-body-md text-sm">Projections</span>
+        </a>
+        <a class="nav-item flex items-center gap-3 px-4 py-3 text-on-surface-variant/70 hover:bg-white/10 hover:text-on-surface transition-all duration-300 rounded-lg" href="#settings" data-target="settings">
+          <span class="material-symbols-outlined">settings</span>
+          <span class="font-body-md text-sm">Settings</span>
+        </a>
+      </nav>
+
+      <div class="px-4 mt-auto">
+        <button onclick="app.openBirthModal()" class="w-full py-3 px-4 bg-primary-container text-on-primary font-bold rounded-xl flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-[0_0_20px_rgba(0,242,254,0.3)] active:scale-95">
+          <span class="material-symbols-outlined">add</span>
+          <span class="text-sm">New Registration</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 ml-72 mr-6 min-h-screen flex flex-col">
+      <!-- Top App Bar -->
+      <header class="flex justify-between items-center w-full px-8 h-20 bg-white/5 backdrop-blur-lg border-b border-white/10 sticky top-0 z-40">
+        <div class="flex items-center gap-8 flex-1">
+          <h1 class="font-headline-md text-xl font-bold text-primary-container" id="page-title">NPC Population Analysis</h1>
+          <div class="relative w-96 group">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50">search</span>
+            <input id="global-search" oninput="app.handleSearch(this.value)" class="w-full bg-white/5 border border-white/10 rounded-full pl-10 pr-4 py-2 focus:ring-2 focus:ring-primary-container/50 focus:border-primary-container outline-none transition-all text-sm text-white" placeholder="Search census data & vital records..."/>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-4 text-on-surface-variant">
+            <span class="material-symbols-outlined cursor-pointer hover:text-primary-container transition-colors relative" onclick="app.toggleNotifications()">notifications<span class="absolute top-0 right-0 w-2 h-2 bg-primary-container rounded-full animate-ping" id="notif-dot"></span></span>
+            <span class="material-symbols-outlined cursor-pointer hover:text-primary-container transition-colors" href="#settings">settings</span>
+            <span class="material-symbols-outlined cursor-pointer hover:text-primary-container transition-colors">account_circle</span>
+          </div>
+          <div class="w-10 h-10 rounded-full border-2 border-primary-container/30 overflow-hidden cursor-pointer" onclick="app.showInsightView()">
+            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj80aUYfRKHfbwdI2ZaC0Aet3Y7SXSxPkTxAdAzkdA3Fwh8FGxWq1f-ZXMGHUrFrmZrr3eaGAkkWQyz_oZaiGfksjyJs-zloPADBrGlLUIsl9Gs5Ed89Z2BuEGVaZhoH0jMA19LzxIwWEIsAd553rNa9r7kHvA4rM0zIjKsyAv9L8ZXT7BOzrUlnkuaoB23xzmM9WNbFokUJhu7qCz0eVwSEbjDFOJib-1DWLH2IU3bLgVB8TrNTUPz0Hi1_l5CFHiJdcjvCBWEGnv" alt="Admin Avatar"/>
+          </div>
+        </div>
+      </header>
+
+      <!-- View Containers -->
+      <main class="flex-1 py-8 overflow-y-auto z-10">
+
+        <!-- 1. DASHBOARD VIEW -->
+        <section id="view-dashboard" class="view-pane view-animate-in space-y-8">
+          <!-- Hero Section: KPI Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Total Population -->
+            <div class="glass-card rounded-xl p-6 relative overflow-hidden group hover:glass-card-raised transition-all duration-500">
+              <div class="flex justify-between items-start mb-4">
+                <span class="text-on-surface-variant font-semibold text-xs uppercase tracking-widest">Total Population</span>
+                <span class="material-symbols-outlined text-primary-container bg-primary-container/10 p-2 rounded-lg" style="font-variation-settings: 'FILL' 1;">groups</span>
+              </div>
+              <div class="text-3xl font-bold text-white font-display" id="kpi-population">232,541,894</div>
+              <div class="mt-2 flex items-center gap-2 text-primary-container text-xs">
+                <span class="material-symbols-outlined text-sm">trending_up</span>
+                <span>+1.2% from last year</span>
+              </div>
+              <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-container/40 to-transparent"></div>
+            </div>
+            <!-- Natural Growth Rate -->
+            <div class="glass-card rounded-xl p-6 relative overflow-hidden group hover:glass-card-raised transition-all duration-500">
+              <div class="flex justify-between items-start mb-4">
+                <span class="text-on-surface-variant font-semibold text-xs uppercase tracking-widest">Natural Growth</span>
+                <span class="material-symbols-outlined text-primary-container bg-primary-container/10 p-2 rounded-lg" style="font-variation-settings: 'FILL' 1;">monitoring</span>
+              </div>
+              <div class="text-3xl font-bold text-white font-display" id="kpi-growth">2.4%</div>
+              <div class="mt-2 flex items-center gap-2 text-on-surface-variant text-xs">
+                <span>Stabilizing trend</span>
+              </div>
+              <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-container/40 to-transparent"></div>
+            </div>
+            <!-- Birth Rate -->
+            <div class="glass-card rounded-xl p-6 relative overflow-hidden group hover:glass-card-raised transition-all duration-500">
+              <div class="flex justify-between items-start mb-4">
+                <span class="text-on-surface-variant font-semibold text-xs uppercase tracking-widest">Birth Rate</span>
+                <span class="material-symbols-outlined text-primary-container bg-primary-container/10 p-2 rounded-lg" style="font-variation-settings: 'FILL' 1;">child_care</span>
+              </div>
+              <div class="text-3xl font-bold text-white font-display" id="kpi-births">37.2/1k</div>
+              <div class="mt-2 flex items-center gap-2 text-primary-container text-xs">
+                <span class="material-symbols-outlined text-sm">keyboard_arrow_up</span>
+                <span>Live recording feed</span>
+              </div>
+              <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-container/40 to-transparent"></div>
+            </div>
+            <!-- Death Rate -->
+            <div class="glass-card rounded-xl p-6 relative overflow-hidden group hover:glass-card-raised transition-all duration-500">
+              <div class="flex justify-between items-start mb-4">
+                <span class="text-on-surface-variant font-semibold text-xs uppercase tracking-widest">Death Rate</span>
+                <span class="material-symbols-outlined text-primary-container bg-primary-container/10 p-2 rounded-lg" style="font-variation-settings: 'FILL' 1;">vital_signs</span>
+              </div>
+              <div class="text-3xl font-bold text-white font-display" id="kpi-deaths">11.8/1k</div>
+              <div class="mt-2 flex items-center gap-2 text-error text-xs">
+                <span class="material-symbols-outlined text-sm">arrow_downward</span>
+                <span>Historical low</span>
+              </div>
+              <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-container/40 to-transparent"></div>
+            </div>
+          </div>
+
+          <!-- Main Panel: Data Hub + Analytics -->
+          <div class="grid grid-cols-12 gap-6 items-start">
+            <!-- Central Geographic Hub -->
+            <div class="col-span-12 lg:col-span-8 glass-card rounded-2xl p-6 h-[600px] flex flex-col relative overflow-hidden">
+              <div class="flex justify-between items-center mb-6">
+                <div>
+                  <h2 class="text-xl font-bold text-white font-headline-md">Geographic Data Hub</h2>
+                  <p class="text-on-surface-variant text-sm">Interactive state-by-state density distribution</p>
+                </div>
+                <div class="flex gap-2">
+                  <button id="map-btn-national" onclick="app.setMapScope('national')" class="px-4 py-2 bg-primary-container text-on-primary rounded-lg text-sm font-bold shadow-[0_0_10px_rgba(0,242,254,0.2)]">National</button>
+                  <button id="map-btn-regional" onclick="app.setMapScope('regional')" class="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm hover:bg-white/10 text-white transition-colors">Regional View</button>
+                </div>
+              </div>
+              <!-- Mock Interactive Map Visualization -->
+              <div class="flex-1 relative border border-white/5 rounded-xl bg-black/20 flex items-center justify-center overflow-hidden">
+                <div class="absolute inset-0 opacity-40">
+                  <img class="w-full h-full object-contain opacity-60 mix-blend-screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgw4B-EgOzXTACyHXZoDkgzTCYlMm9HAnkQ5Qw80fO9ZbGxRYNhQX7xINOoK0BsF0iDLkWh3uykmMfMCbsYtejiwtJ19DFmzGG2LHPPX803DD9JoQJ8OiPfw-Cm1evo_RZt2hQ8n_JonXqCw1Mh7aaczcCmu5dWNPPGqjJTwG8q12FDB12nsBi23-8JavXV_5AAzuUlxEC1xNNhYsDHg9lS1mj-hDqPsMZcIngacv5lKp_-_0RIhm9VYjI0HgxYSEr4BxhK_GMg_n9" alt="Nigeria Map Background"/>
+                </div>
+                <!-- Interactive Overlay Pins/Bars -->
+                <div onclick="app.selectState('Kano')" class="absolute top-1/4 left-1/3 w-3 h-20 bg-primary-container/40 rounded-full cyan-glow flex flex-col-reverse group cursor-pointer hover:bg-primary-container/80 transition-all">
+                  <div class="h-1/2 w-full bg-primary-container rounded-full animate-pulse"></div>
+                  <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-surface-container border border-white/10 p-2 rounded text-[10px] whitespace-nowrap z-20 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity">Kano State: 15.4M</div>
+                </div>
+                <div onclick="app.selectState('Lagos')" class="absolute bottom-1/3 right-1/4 w-3 h-32 bg-primary-container/40 rounded-full cyan-glow flex flex-col-reverse group cursor-pointer hover:bg-primary-container/80 transition-all">
+                  <div class="h-2/3 w-full bg-primary-container rounded-full animate-pulse"></div>
+                  <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-surface-container border border-white/10 p-2 rounded text-[10px] whitespace-nowrap z-20 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity">Lagos State: 22.1M</div>
+                </div>
+                <div onclick="app.selectState('Abuja')" class="absolute bottom-1/4 left-1/2 w-3 h-16 bg-primary-container/40 rounded-full cyan-glow flex flex-col-reverse group cursor-pointer hover:bg-primary-container/80 transition-all">
+                  <div class="h-1/3 w-full bg-primary-container rounded-full animate-pulse"></div>
+                  <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-surface-container border border-white/10 p-2 rounded text-[10px] whitespace-nowrap z-20 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity">Abuja FCT: 4.2M</div>
+                </div>
+                <!-- Interactive click instruction -->
+                <div class="absolute top-4 left-4 bg-white/5 border border-white/10 rounded-lg p-2 text-xs backdrop-blur-md">
+                  Click on pins to inspect regional reports
+                </div>
+                <!-- Legend -->
+                <div class="absolute bottom-6 left-6 p-4 glass-card-raised rounded-lg text-xs space-y-2">
+                  <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-primary-container rounded-sm"></div>
+                    <span>High Density (>500/km²)</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-primary-container/40 rounded-sm"></div>
+                    <span>Medium Density</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-white/10 rounded-sm"></div>
+                    <span>Low Density</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sidebar Analytics Pane -->
+            <div class="col-span-12 lg:col-span-4 space-y-6">
+              <!-- Age Distribution Chart Card -->
+              <div class="glass-card rounded-2xl p-6">
+                <div class="flex justify-between items-center mb-6">
+                  <h3 class="font-bold text-white text-md font-headline-md">Age Distribution</h3>
+                  <span class="material-symbols-outlined text-on-surface-variant/50 cursor-pointer">info</span>
+                </div>
+                <div class="h-40">
+                  <canvas id="ageChart"></canvas>
+                </div>
+              </div>
+              <!-- Growth Trends Spark Card -->
+              <div class="glass-card rounded-2xl p-6">
+                <div class="flex justify-between items-center mb-4">
+                  <h3 class="font-bold text-white text-md font-headline-md">10-Year Growth Timeline</h3>
+                  <span class="text-xs text-primary-container font-mono">Live Sync</span>
+                </div>
+                <div class="h-32">
+                  <canvas id="growthTrendChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. REGISTRATIONS VIEW -->
+        <section id="view-registrations" class="view-pane hidden space-y-8">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="text-2xl font-bold text-white">Vital Registrations Portal</h2>
+              <p class="text-on-surface-variant text-sm">Live registry events and records database.</p>
+            </div>
+            <div class="flex gap-4">
+              <button onclick="app.openBirthModal()" class="flex items-center gap-2 bg-primary-container/10 border border-primary-container/30 text-primary-container px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary-container/20 transition-all">
+                <span class="material-symbols-outlined text-[18px]">child_care</span>
+                New Birth
+              </button>
+              <button onclick="app.openDeathModal()" class="flex items-center gap-2 bg-error-container/20 border border-error-container/40 text-error px-4 py-2 rounded-lg text-sm font-semibold hover:bg-error-container/30 transition-all">
+                <span class="material-symbols-outlined text-[18px]">heart_broken</span>
+                New Death
+              </button>
+              <button onclick="app.openExportModal()" class="flex items-center gap-2 bg-white/5 border border-white/10 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-white/10 transition-all">
+                <span class="material-symbols-outlined text-[18px]">download</span>
+                Export Report
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-12 gap-6 items-start">
+            <!-- Registrations List -->
+            <div class="col-span-12 lg:col-span-8 glass-card rounded-2xl overflow-hidden">
+              <div class="px-6 py-4 border-b border-white/10 flex justify-between items-center bg-white/5">
+                <h4 class="font-bold text-primary-container uppercase tracking-wider text-xs">Recent Records</h4>
+                <input id="table-search" oninput="app.searchTable(this.value)" class="bg-white/5 border border-white/10 rounded-full px-4 py-1 text-xs outline-none focus:ring-1 focus:ring-primary-container text-white" placeholder="Search rows..."/>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="text-on-surface-variant/60 text-xs font-semibold uppercase tracking-wider border-b border-white/5">
+                      <th class="px-6 py-4">NIN / ID</th>
+                      <th class="px-6 py-4">Registrant Name</th>
+                      <th class="px-6 py-4">Type</th>
+                      <th class="px-6 py-4">Date</th>
+                      <th class="px-6 py-4">Location</th>
+                      <th class="px-6 py-4">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-white/5" id="registrations-tbody">
+                    <!-- Dynamic Records Loaded from LocalStorage/Memory -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Registrations KPI Sidebar -->
+            <div class="col-span-12 lg:col-span-4 space-y-6">
+              <div class="glass-card rounded-2xl p-6">
+                <h5 class="text-on-surface-variant text-xs font-semibold uppercase tracking-widest mb-2">Registry Completion</h5>
+                <div class="flex items-end gap-2 mb-4">
+                  <span class="text-4xl font-extrabold text-primary-container neon-text font-display">94.2%</span>
+                  <span class="text-green-400 text-xs font-bold mb-1 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm">trending_up</span> +2.1%
+                  </span>
+                </div>
+                <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-primary-container h-full w-[94.2%] shadow-[0_0_10px_rgba(0,242,254,0.6)]"></div>
+                </div>
+                <p class="text-[10px] text-on-surface-variant mt-3">Target KPI: 96% by year-end</p>
+              </div>
+
+              <div class="glass-card rounded-2xl p-6 border-l-4 border-primary-container">
+                <h5 class="text-on-surface-variant text-xs font-semibold uppercase tracking-widest mb-4">Daily Volume</h5>
+                <div class="space-y-4">
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm">New Births</span>
+                    <span class="text-lg font-bold text-primary-container font-display" id="daily-births-count">2,841</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm">Deaths Recorded</span>
+                    <span class="text-lg font-bold text-error font-display" id="daily-deaths-count">894</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. MIGRATION VIEW -->
+        <section id="view-migration" class="view-pane hidden space-y-8">
+          <div>
+            <h2 class="text-2xl font-bold text-white font-headline-md">Migration &amp; Geographic Hub</h2>
+            <p class="text-on-surface-variant text-sm">Real-time internal migration matrices and global immigration tracking.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-primary-container">
+              <p class="text-on-surface-variant text-xs uppercase tracking-wider font-semibold">Global Net Migration</p>
+              <h3 class="text-3xl font-extrabold text-primary-container font-display mt-2">+14.2%</h3>
+              <p class="text-xs text-on-surface-variant/70 mt-2">Annualized net inbound growth</p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl">
+              <p class="text-on-surface-variant text-xs uppercase tracking-wider font-semibold">Total Inbound Flows</p>
+              <h3 class="text-3xl font-extrabold text-white font-display mt-2">8.2M</h3>
+              <p class="text-xs text-on-surface-variant/70 mt-2">International & cross-state entry</p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl">
+              <p class="text-on-surface-variant text-xs uppercase tracking-wider font-semibold">Outbound Deficit</p>
+              <h3 class="text-3xl font-extrabold text-white font-display mt-2">3.1M</h3>
+              <p class="text-xs text-on-surface-variant/70 mt-2">Regional exits registered</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-12 gap-6">
+            <div class="col-span-12 lg:col-span-8 glass-card rounded-2xl p-6">
+              <h3 class="font-bold text-white text-md mb-4 font-headline-md">Inter-State Migration Vectors</h3>
+              <div class="h-64 flex items-center justify-center relative bg-black/10 rounded-xl overflow-hidden">
+                <!-- SVG map connector arrows simulated background -->
+                <svg class="absolute inset-0 w-full h-full opacity-60" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Kano to Lagos -->
+                  <path d="M 300 80 Q 400 150 480 220" fill="none" stroke="#00f2fe" stroke-width="2" class="animate-flow" />
+                  <!-- Abuja to Lagos -->
+                  <path d="M 380 140 Q 420 180 480 220" fill="none" stroke="#00f2fe" stroke-width="3" class="animate-flow" />
+                  <!-- East to West -->
+                  <path d="M 520 230 Q 500 230 480 220" fill="none" stroke="#00f2fe" stroke-width="1.5" class="animate-flow" />
+                </svg>
+                <div class="z-10 text-center px-6">
+                  <span class="material-symbols-outlined text-primary-container text-4xl mb-2 animate-bounce">sync_alt</span>
+                  <p class="text-sm font-semibold text-white">Active Migration vectors syncing between Kano, Abuja FCT, and Lagos State.</p>
+                </div>
+              </div>
+            </div>
+            <!-- Top migration hubs -->
+            <div class="col-span-12 lg:col-span-4 glass-card rounded-2xl p-6">
+              <h3 class="font-bold text-white text-md mb-4 font-headline-md">Primary Destination States</h3>
+              <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                  <span class="text-sm font-semibold">1. Lagos</span>
+                  <span class="text-primary-container font-mono">+64% share</span>
+                </div>
+                <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                  <div class="bg-primary-container h-full w-[64%]"></div>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm font-semibold">2. Abuja FCT</span>
+                  <span class="text-primary-container font-mono">+22% share</span>
+                </div>
+                <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                  <div class="bg-primary-container h-full w-[22%]"></div>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm font-semibold">3. Rivers</span>
+                  <span class="text-primary-container font-mono">+14% share</span>
+                </div>
+                <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                  <div class="bg-primary-container h-full w-[14%]"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. PROJECTIONS VIEW -->
+        <section id="view-projections" class="view-pane hidden space-y-8">
+          <div>
+            <h2 class="text-2xl font-bold text-white">Demographic Projections Engine</h2>
+            <p class="text-on-surface-variant text-sm">Calculate and visualize demographic projections using standard growth equations.</p>
+          </div>
+
+          <div class="grid grid-cols-12 gap-6">
+            <!-- Projections Calculator Form -->
+            <div class="col-span-12 lg:col-span-4 glass-card rounded-2xl p-6 space-y-6">
+              <h3 class="font-bold text-white text-md font-headline-md">Calculator Configurations</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">Base Year</label>
+                  <input id="proj-base-year" type="number" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white outline-none focus:border-primary-container" value="2026"/>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">Target Year</label>
+                  <input id="proj-target-year" type="number" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white outline-none focus:border-primary-container" value="2036"/>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">Assumed Growth Rate (% per annum)</label>
+                  <input id="proj-growth-rate" type="number" step="0.1" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white outline-none focus:border-primary-container" value="2.4"/>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">Fertility Rate Index</label>
+                  <input id="proj-fertility" type="number" step="0.1" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white outline-none focus:border-primary-container" value="5.2"/>
+                </div>
+                <button onclick="app.calculateProjections()" class="w-full py-3 bg-primary-container text-on-primary font-bold rounded-lg shadow-lg hover:scale-[1.02] transition-all active:scale-95">
+                  Run Math Simulation
+                </button>
+              </div>
+            </div>
+
+            <!-- Projections Chart Rendering -->
+            <div class="col-span-12 lg:col-span-8 glass-card rounded-2xl p-6 flex flex-col justify-between">
+              <div>
+                <h3 class="font-bold text-white text-md mb-2 font-headline-md">Population Projection Path</h3>
+                <p class="text-xs text-on-surface-variant/70 mb-4">Calculated using exponential growth model: P(t) = P0 * e^(rt)</p>
+              </div>
+              <div class="h-64">
+                <canvas id="projectionChart"></canvas>
+              </div>
+              <div class="mt-4 pt-4 border-t border-white/5 flex justify-between items-center text-sm">
+                <span>Estimated Target Population:</span>
+                <span class="font-bold text-primary-container text-lg" id="proj-estimated-val">295,491,202</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. SETTINGS VIEW -->
+        <section id="view-settings" class="view-pane hidden space-y-8">
+          <div>
+            <h2 class="text-2xl font-bold text-white">System Settings</h2>
+            <p class="text-on-surface-variant text-sm">Manage API keys, synchronization schedules, database configurations, and portal themes.</p>
+          </div>
+
+          <div class="max-w-3xl glass-card rounded-2xl p-8 space-y-6">
+            <h3 class="font-bold text-white text-md border-b border-white/10 pb-2">Sync Infrastructure</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">NIN Gateway Server Address</label>
+                <input type="text" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white" value="https://api.nin-portal.gov.ng/v2"/>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">Sync Intervals</label>
+                <select class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white">
+                  <option class="bg-surface-container">Every 5 Minutes</option>
+                  <option class="bg-surface-container">Hourly</option>
+                  <option class="bg-surface-container" selected>Real-time (Live Nodes)</option>
+                </select>
+              </div>
+            </div>
+            
+            <h3 class="font-bold text-white text-md border-b border-white/10 pb-2 pt-4">Data Integrity & Backups</h3>
+            <div class="space-y-4">
+              <div class="flex justify-between items-center">
+                <div>
+                  <h4 class="text-sm font-semibold text-white">Clear Cached Records</h4>
+                  <p class="text-xs text-on-surface-variant/60">Reset localStorage database to factory default test records.</p>
+                </div>
+                <button onclick="app.resetStore()" class="px-4 py-2 bg-error-container/20 border border-error-container/40 text-error rounded-lg text-xs font-bold hover:bg-error-container/40 transition-all">Clear Database</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. INSIGHT DETAIL VIEW (Popup context) -->
+        <section id="view-insight-details" class="view-pane hidden space-y-8">
+          <div>
+            <h2 class="text-2xl font-bold text-white font-display">Analysis Insight Detail View</h2>
+            <p class="text-on-surface-variant text-sm">NPC Census Audit and Regional Density Overview.</p>
+          </div>
+          <div class="glass-card rounded-2xl p-6 space-y-6">
+            <h3 class="text-lg font-bold text-primary-container font-headline-md" id="insight-state-title">Audit Trail State: Lagos State</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="glass-card p-4 rounded-xl">
+                <span class="text-xs text-on-surface-variant">LGA Count</span>
+                <p class="text-xl font-bold text-white" id="insight-lga-count">20 LGAs</p>
+              </div>
+              <div class="glass-card p-4 rounded-xl">
+                <span class="text-xs text-on-surface-variant">Density Level</span>
+                <p class="text-xl font-bold text-primary-container" id="insight-density">High (Urban Peak)</p>
+              </div>
+              <div class="glass-card p-4 rounded-xl">
+                <span class="text-xs text-on-surface-variant">Primary Sector Hubs</span>
+                <p class="text-xl font-bold text-white" id="insight-hubs">Ikeja, Lekki, Alimosho</p>
+              </div>
+            </div>
+            <div class="h-48 border border-white/5 bg-black/10 rounded-xl flex items-center justify-center p-6 text-center">
+              <p class="text-xs text-on-surface-variant">Detailed Geospatial Data Grid Rendering Active (320,000 baseline nodes scanned in real-time)...</p>
+            </div>
+            <button onclick="window.location.hash='#dashboard'" class="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white hover:bg-white/10 transition-all">
+              Back to Dashboard
+            </button>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- Footer Overlay -->
+      <footer class="py-8 text-on-surface-variant border-t border-white/10 flex justify-between items-center text-xs">
+        <span>© 2026 National Population Commission | Demographix AI</span>
+        <div class="flex gap-6">
+          <a class="hover:text-primary-container" href="#">Privacy Policy</a>
+          <a class="hover:text-primary-container" href="#">Audit Logs</a>
+          <a class="hover:text-primary-container" href="#">System Status</a>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- OVERLAY MODALS -->
+
+  <!-- A. BIRTH REGISTRATION MODAL -->
+  <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm hidden" id="birth-modal">
+    <div class="glass-card w-full max-w-2xl rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10">
+      <div class="px-8 py-6 border-b border-white/10 flex justify-between items-start">
+        <div>
+          <h3 class="text-lg font-bold text-primary-container font-headline-md">New Birth Registration</h3>
+          <p class="text-[10px] text-on-surface-variant/70 uppercase tracking-widest mt-1">NPC Formal Record</p>
+        </div>
+        <button onclick="app.closeBirthModal()" class="p-2 rounded-full hover:bg-white/10 text-on-surface-variant transition-colors">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <form class="p-8 space-y-6" onsubmit="app.handleBirthSubmit(event)">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="col-span-2">
+            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">Child's Full Name</label>
+            <input id="birth-name" required class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary-container/50 transition-all" placeholder="Enter full legal name" type="text"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">Date of Birth</label>
+            <input id="birth-date" required class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary-container/50 transition-all" type="date"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">Gender</label>
+            <select id="birth-gender" required class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary-container/50 transition-all">
+              <option class="bg-surface-container" value="">Select Gender</option>
+              <option class="bg-surface-container">Male</option>
+              <option class="bg-surface-container">Female</option>
+              <option class="bg-surface-container">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">State of Birth</label>
+            <select id="birth-state" required class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary-container/50 transition-all">
+              <option class="bg-surface-container" value="">Select State</option>
+              <option class="bg-surface-container">Lagos</option>
+              <option class="bg-surface-container">Kano</option>
+              <option class="bg-surface-container">Abuja FCT</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">LGA</label>
+            <input id="birth-lga" required class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary-container/50 transition-all" placeholder="Enter LGA"/>
+          </div>
+        </div>
+        <div class="flex justify-end gap-4 pt-4">
+          <button onclick="app.closeBirthModal()" class="px-6 py-3 rounded-lg font-semibold text-on-surface-variant hover:bg-white/10 transition-all" type="button">Cancel</button>
+          <button class="px-8 py-3 bg-primary-container text-on-primary rounded-lg font-bold shadow-[0_0_20px_rgba(0,242,254,0.4)] hover:brightness-110 transition-all active:scale-95" type="submit">Submit Registration</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- B. DEATH REGISTRATION MODAL -->
+  <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm hidden" id="death-modal">
+    <div class="glass-card w-full max-w-2xl rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10">
+      <div class="px-8 py-6 border-b border-white/10 flex justify-between items-start">
+        <div>
+          <h3 class="text-lg font-bold text-primary-container font-headline-md">New Death Registration</h3>
+          <p class="text-[10px] text-on-surface-variant/70 uppercase tracking-widest mt-1">NPC Formal Record</p>
+        </div>
+        <button onclick="app.closeDeathModal()" class="p-2 rounded-full hover:bg-white/10 text-on-surface-variant transition-colors">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <form class="p-8 space-y-6" onsubmit="app.handleDeathSubmit(event)">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="col-span-2">
+            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">Citizen Name</label>
+            <input id="death-name" required class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary-container/50 transition-all" placeholder="Enter full legal name" type="text"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">Date of Occurrence</label>
+            <input id="death-date" required class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary-container/50 transition-all" type="date"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">State of Occurrence</label>
+            <select id="death-state" required class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary-container/50 transition-all">
+              <option class="bg-surface-container" value="">Select State</option>
+              <option class="bg-surface-container">Lagos</option>
+              <option class="bg-surface-container">Kano</option>
+              <option class="bg-surface-container">Abuja FCT</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">LGA</label>
+            <input id="death-lga" required class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary-container/50 transition-all" placeholder="Enter LGA"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">Cause of Death</label>
+            <select id="death-cause" required class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary-container/50 transition-all">
+              <option class="bg-surface-container" value="">Select Cause</option>
+              <option class="bg-surface-container">Natural Causes</option>
+              <option class="bg-surface-container">Accident</option>
+              <option class="bg-surface-container">Illness</option>
+              <option class="bg-surface-container">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex justify-end gap-4 pt-4">
+          <button onclick="app.closeDeathModal()" class="px-6 py-3 rounded-lg font-semibold text-on-surface-variant hover:bg-white/10 transition-all" type="button">Cancel</button>
+          <button class="px-8 py-3 bg-primary-container text-on-primary rounded-lg font-bold shadow-[0_0_20px_rgba(0,242,254,0.4)] hover:brightness-110 transition-all active:scale-95" type="submit">Submit Registration</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- C. EXPORT MODAL -->
+  <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 hidden" id="export-modal">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="app.closeExportModal()"></div>
+    <div class="relative w-full max-w-lg glass-card rounded-2xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/20 overflow-hidden">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-primary-container/10 blur-[40px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
+      <div class="relative z-10">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <h2 class="text-xl font-bold text-primary-container">Export Analytical Report</h2>
+            <p class="text-on-surface-variant text-xs mt-1">Generate a high-fidelity PDF document for executive review.</p>
+          </div>
+          <button onclick="app.closeExportModal()" class="material-symbols-outlined text-on-surface-variant hover:text-white">close</button>
+        </div>
+        <div class="space-y-4 mb-8">
+          <label class="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all cursor-pointer">
+            <input checked="" class="w-4 h-4 text-primary-container focus:ring-primary-container bg-transparent border-white/20" name="export-type" type="radio" value="pdf"/>
+            <div class="flex-grow">
+              <p class="font-bold text-sm">Complete Executive Summary</p>
+              <p class="text-xs text-on-surface-variant">Full summary, all charts, and regional analysis.</p>
+            </div>
+          </label>
+          <label class="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all cursor-pointer">
+            <input class="w-4 h-4 text-primary-container focus:ring-primary-container bg-transparent border-white/20" name="export-type" type="radio" value="charts"/>
+            <div class="flex-grow">
+              <p class="font-bold text-sm">Visual Charts Only</p>
+              <p class="text-xs text-on-surface-variant">Visual data representations without detailed text.</p>
+            </div>
+          </label>
+        </div>
+        <div class="flex flex-col gap-3">
+          <button onclick="app.triggerExportDownload()" class="w-full bg-primary-container text-on-primary font-bold py-4 rounded-xl flex items-center justify-center gap-2 glow-accent hover:brightness-110 active:scale-95 transition-all">
+            <span class="material-symbols-outlined">picture_as_pdf</span>
+            Print PDF Report
+          </button>
+          <button onclick="app.closeExportModal()" class="w-full py-3 text-on-surface-variant hover:text-white transition-colors text-sm">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D. SUCCESS MODAL OVERLAY -->
+  <div class="fixed inset-0 z-50 flex items-center justify-center px-4 hidden" id="success-modal">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="app.closeSuccessModal()"></div>
+    <div class="relative w-full max-w-lg glass-panel rounded-3xl p-10 text-center shadow-[0_20px_40px_rgba(0,0,0,0.5)] overflow-hidden">
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary-container/10 blur-[60px] rounded-full"></div>
+      <div class="relative mb-8">
+        <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-primary-container/20 border border-primary-container/40 neon-glow">
+          <span class="material-symbols-outlined text-primary-container !text-5xl">check_circle</span>
+        </div>
+      </div>
+      <div class="relative space-y-4">
+        <h2 class="text-2xl font-bold text-on-surface" id="success-modal-title">Success</h2>
+        <p class="text-sm text-on-surface-variant leading-relaxed px-4" id="success-modal-body">Operation completed successfully.</p>
+      </div>
+      <div class="relative mt-10 space-y-4">
+        <button id="success-modal-action-btn" class="w-full py-4 px-6 bg-primary-container text-on-primary font-bold rounded-xl flex items-center justify-center gap-3 neon-glow hover:neon-glow-strong transition-all duration-300 active:scale-95">
+          <span class="material-symbols-outlined text-xl">download</span>
+          <span>Download Document</span>
+        </button>
+        <button onclick="app.closeSuccessModal()" class="w-full py-4 px-6 bg-white/5 hover:bg-white/10 text-white rounded-xl border border-white/10 transition-all duration-300 active:scale-95">
+          Dismiss
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main JavaScript App -->
+  <script src="app.js"></script>
+</body>
+</html>
