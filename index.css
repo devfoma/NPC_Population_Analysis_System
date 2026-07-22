@@ -1,0 +1,187 @@
+/* Design System - Kinetic Governance Style Guide */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+:root {
+  /* Color Tokens */
+  --surface: #121414;
+  --surface-dim: #121414;
+  --surface-bright: #37393a;
+  --surface-container-lowest: #0c0f0f;
+  --surface-container-low: #1a1c1c;
+  --surface-container: #1e2020;
+  --surface-container-high: #282a2b;
+  --surface-container-highest: #333535;
+  --on-surface: #e2e2e2;
+  --on-surface-variant: #b9cacb;
+  --inverse-surface: #e2e2e2;
+  --inverse-on-surface: #2f3131;
+  --outline: #849495;
+  --outline-variant: #3a494b;
+  --surface-tint: #00dce6;
+  --primary: #e0fdff;
+  --on-primary: #00373a;
+  --primary-container: #00f2fe;
+  --on-primary-container: #006a70;
+  --inverse-primary: #00696f;
+  --secondary: #adc7f7;
+  --on-secondary: #133057;
+  --secondary-container: #2f4a72;
+  --on-secondary-container: #9fb9e8;
+  --tertiary: #f6f7ff;
+  --on-tertiary: #273141;
+  --tertiary-container: #d1dbf1;
+  --on-tertiary-container: #566072;
+  --error: #ffb4ab;
+  --on-error: #690005;
+  --error-container: #93000a;
+  --on-error-container: #ffdad6;
+  --primary-fixed: #6ff6ff;
+  --primary-fixed-dim: #00dce6;
+  --on-primary-fixed: #002022;
+  --on-primary-fixed-variant: #004f53;
+  --secondary-fixed: #d6e3ff;
+  --secondary-fixed-dim: #adc7f7;
+  --on-secondary-fixed: #001b3c;
+  --on-secondary-fixed-variant: #2d476f;
+  --tertiary-fixed: #d9e3f9;
+  --tertiary-fixed-dim: #bdc7dc;
+  --on-tertiary-fixed: #121c2c;
+  --on-tertiary-fixed-variant: #3d4759;
+  --background: #121414;
+  --on-background: #e2e2e2;
+  --surface-variant: #333535;
+
+  /* Typography Fonts */
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+/* Background Mesh Gradients */
+body {
+  background: radial-gradient(circle at 15% 15%, #001b3c 0%, #121414 60%), 
+              radial-gradient(circle at 85% 85%, #00373a 0%, #121414 60%);
+  min-height: 100vh;
+  color: var(--on-surface);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+/* Glassmorphism Styles */
+.glass-panel, .glass-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.glass-card-raised {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-table-row {
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-table-row:hover {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 15px rgba(0, 242, 254, 0.1);
+  border-color: rgba(0, 242, 254, 0.3);
+}
+
+/* Cyan glows */
+.cyan-glow, .active-glow {
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+}
+
+.glow-accent:hover {
+  box-shadow: 0 0 25px rgba(0, 242, 254, 0.6);
+}
+
+.neon-glow-strong {
+  box-shadow: 0 0 30px rgba(0, 242, 254, 0.8);
+}
+
+.neon-text {
+  text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
+}
+
+/* WebGL Background simulation dynamic movement */
+.mesh-gradient-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  background: 
+    radial-gradient(circle at 80% 20%, rgba(0, 242, 254, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 20% 80%, rgba(173, 199, 247, 0.05) 0%, transparent 40%);
+  transition: transform 0.2s ease-out;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(10px); }
+}
+
+.view-animate-in {
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Custom Scrollbars */
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 242, 254, 0.3);
+  border-radius: 10px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 242, 254, 0.5);
+}
+
+/* Floating labels effect for forms */
+.floating-label-group {
+  position: relative;
+}
+
+.floating-label-group label {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 0.2s ease;
+  pointer-events: none;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.floating-label-group input:focus ~ label,
+.floating-label-group input:not(:placeholder-shown) ~ label {
+  top: 0;
+  transform: translateY(-50%) scale(0.85);
+  left: 0.75rem;
+  padding: 0 0.25rem;
+  background: var(--surface-container);
+  color: #fff;
+}
