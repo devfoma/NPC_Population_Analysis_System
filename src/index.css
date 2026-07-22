@@ -1,7 +1,10 @@
-/* Design System - Kinetic Governance Style Guide */
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+@import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   /* Color Tokens */
@@ -58,7 +61,6 @@
   --font-body: 'Inter', sans-serif;
 }
 
-/* Background Mesh Gradients */
 body {
   background: radial-gradient(circle at 15% 15%, #001b3c 0%, #121414 60%), 
               radial-gradient(circle at 85% 85%, #00373a 0%, #121414 60%);
@@ -95,7 +97,7 @@ body {
 }
 
 /* Cyan glows */
-.cyan-glow, .active-glow {
+.cyan-glow {
   box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
 }
 
@@ -126,21 +128,6 @@ body {
   transition: transform 0.2s ease-out;
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeOut {
-  from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(10px); }
-}
-
-.view-animate-in {
-  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
 /* Custom Scrollbars */
 .custom-scroll::-webkit-scrollbar {
   width: 6px;
@@ -161,27 +148,53 @@ body {
   background: rgba(0, 242, 254, 0.5);
 }
 
-/* Floating labels effect for forms */
-.floating-label-group {
-  position: relative;
+/* Leaflet Map overrides for glassmorphic design */
+.leaflet-container {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border-radius: 0.75rem;
+  font-family: inherit;
+  z-index: 1;
 }
 
-.floating-label-group label {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: all 0.2s ease;
-  pointer-events: none;
-  color: rgba(255, 255, 255, 0.5);
+.leaflet-bar {
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: none !important;
 }
 
-.floating-label-group input:focus ~ label,
-.floating-label-group input:not(:placeholder-shown) ~ label {
-  top: 0;
-  transform: translateY(-50%) scale(0.85);
-  left: 0.75rem;
-  padding: 0 0.25rem;
-  background: var(--surface-container);
-  color: #fff;
+.leaflet-bar a {
+  background-color: rgba(30, 32, 32, 0.85) !important;
+  color: #e2e2e2 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s;
+}
+
+.leaflet-bar a:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #00f2fe !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: rgba(30, 32, 32, 0.9) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #e2e2e2 !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+.leaflet-popup-tip {
+  background: rgba(30, 32, 32, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Vector animation */
+@keyframes flow {
+  from { stroke-dashoffset: 100; }
+  to { stroke-dashoffset: 0; }
+}
+
+.animate-flow {
+  stroke-dasharray: 10;
+  animation: flow 20s linear infinite;
 }
