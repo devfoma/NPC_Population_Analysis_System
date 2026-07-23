@@ -2,12 +2,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 @import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-surface-dim: #121414;
+  --color-inverse-primary: #00696f;
+  --color-inverse-surface: #e2e2e2;
+  --color-primary-fixed-dim: #00dce6;
+  --color-on-error: #690005;
+  --color-error: #ffb4ab;
+  --color-on-background: #e2e2e2;
+  --color-on-primary: #00373a;
+  --color-on-secondary: #133057;
+  --color-surface-container: #1e2020;
+  --color-background: #121414;
+  --color-on-primary-container: #006a70;
+  --color-secondary: #adc7f7;
+  --color-primary: #e0fdff;
+  --color-surface-bright: #37393a;
+  --color-secondary-container: #2f4a72;
+  --color-surface-container-low: #1a1c1c;
+  --color-on-surface-variant: #b9cacb;
+  --color-on-surface: #e2e2e2;
+  --color-surface-container-highest: #333535;
+  --color-surface: #121414;
+  --color-surface-tint: #00dce6;
+  --color-primary-fixed: #6ff6ff;
+  --color-primary-container: #00f2fe;
+  --color-outline: #849495;
+  --color-outline-variant: #3a494b;
+
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
 
 :root {
-  /* Color Tokens */
   --surface: #121414;
   --surface-dim: #121414;
   --surface-bright: #37393a;
@@ -56,7 +85,6 @@
   --on-background: #e2e2e2;
   --surface-variant: #333535;
 
-  /* Typography Fonts */
   --font-display: 'Outfit', sans-serif;
   --font-body: 'Inter', sans-serif;
 }

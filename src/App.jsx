@@ -378,7 +378,7 @@ export default function App() {
                   <div className="flex justify-between items-center mb-4">
                     <div>
                       <h2 className="text-xl font-bold text-white">Geographic Data Hub</h2>
-                      <p class="text-on-surface-variant text-xs">Live interactive map of Nigerian regional density hubs</p>
+                      <p className="text-on-surface-variant text-xs">Live interactive map of Nigerian regional density hubs</p>
                     </div>
                     <div className="flex gap-2">
                       <button onClick={() => setMapScope('national')} className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${mapScope === 'national' ? 'bg-primary-container text-on-primary shadow-lg' : 'bg-white/5 border border-white/10 hover:bg-white/10 text-white'}`}>National</button>
@@ -432,13 +432,13 @@ export default function App() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                       <thead>
-                        <tr class="text-on-surface-variant/60 text-xs font-semibold uppercase tracking-wider border-b border-white/5">
-                          <th class="px-6 py-4">NIN / ID</th>
-                          <th class="px-6 py-4">Registrant Name</th>
-                          <th class="px-6 py-4">Type</th>
-                          <th class="px-6 py-4">Date</th>
-                          <th class="px-6 py-4">Location</th>
-                          <th class="px-6 py-4">Status</th>
+                        <tr className="text-on-surface-variant/60 text-xs font-semibold uppercase tracking-wider border-b border-white/5">
+                          <th className="px-6 py-4">NIN / ID</th>
+                          <th className="px-6 py-4">Registrant Name</th>
+                          <th className="px-6 py-4">Type</th>
+                          <th className="px-6 py-4">Date</th>
+                          <th className="px-6 py-4">Location</th>
+                          <th className="px-6 py-4">Status</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-white/5">
@@ -490,8 +490,8 @@ export default function App() {
                         <span className="text-lg font-bold text-primary-container font-display">{store.dailyBirths.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span class="text-sm">Deaths Recorded</span>
-                        <span class="text-lg font-bold text-error font-display">{store.dailyDeaths.toLocaleString()}</span>
+                        <span className="text-sm">Deaths Recorded</span>
+                        <span className="text-lg font-bold text-error font-display">{store.dailyDeaths.toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
@@ -513,12 +513,12 @@ export default function App() {
                   <h3 className="text-3xl font-extrabold text-primary-container font-display mt-2">+14.2%</h3>
                 </div>
                 <div className="glass-card p-6 rounded-2xl">
-                  <p class="text-on-surface-variant text-xs uppercase font-semibold">Total Inbound Flows</p>
-                  <h3 class="text-3xl font-extrabold text-white font-display mt-2">8.2M</h3>
+                  <p className="text-on-surface-variant text-xs uppercase font-semibold">Total Inbound Flows</p>
+                  <h3 className="text-3xl font-extrabold text-white font-display mt-2">8.2M</h3>
                 </div>
-                <div class="glass-card p-6 rounded-2xl">
-                  <p class="text-on-surface-variant text-xs uppercase font-semibold">Outbound Deficit</p>
-                  <h3 class="text-3xl font-extrabold text-white font-display mt-2">3.1M</h3>
+                <div className="glass-card p-6 rounded-2xl">
+                  <p className="text-on-surface-variant text-xs uppercase font-semibold">Outbound Deficit</p>
+                  <h3 className="text-3xl font-extrabold text-white font-display mt-2">3.1M</h3>
                 </div>
               </div>
             </div>
@@ -698,8 +698,8 @@ export default function App() {
           <div className="glass-card w-full max-w-2xl rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10">
             <div className="px-8 py-6 border-b border-white/10 flex justify-between items-start">
               <div>
-                <h3 class="text-lg font-bold text-primary-container font-display">New Death Registration</h3>
-                <p class="text-[10px] text-on-surface-variant/70 uppercase tracking-widest mt-1">NPC Formal Record</p>
+                <h3 className="text-lg font-bold text-primary-container font-display">New Death Registration</h3>
+                <p className="text-[10px] text-on-surface-variant/70 uppercase tracking-widest mt-1">NPC Formal Record</p>
               </div>
               <button onClick={() => setShowDeathModal(false)} className="p-2 rounded-full hover:bg-white/10 text-on-surface-variant transition-colors">✕</button>
             </div>
