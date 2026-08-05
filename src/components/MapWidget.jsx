@@ -1,8 +1,10 @@
+"use client";
+
 import React, { useEffect } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 
-// Fix Leaflet marker icon issues in Vite/Webpack build bundler
+// Fix Leaflet marker icon issues in Next.js build bundler
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -32,7 +34,7 @@ export default function MapWidget({ onSelectState }) {
   ];
 
   return (
-    <div className="w-full h-full relative" style={{ minHeight: '350px' }}>
+    <div className="w-full h-full relative animate-in fade-in duration-700" style={{ minHeight: '350px' }}>
       <MapContainer 
         center={centerNigeria} 
         zoom={6} 

@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
@@ -22,6 +24,8 @@ const defaultBaseline = {
 
 export function useSupabaseSync() {
   const [store, setStore] = useState(() => {
+    if (typeof window === 'undefined') return defaultBaseline;
+    
     const saved = localStorage.getItem("npc_store_react");
     if (saved) {
       try {
@@ -40,13 +44,20 @@ export function useSupabaseSync() {
   });
 
   const [supabaseClient, setSupabaseClient] = useState(null);
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [isOnline, setIsOnline] = useState(true);
   const [syncStatus, setSyncStatus] = useState("Offline (Local Mode)");
   const [syncActive, setSyncActive] = useState(false);
 
+  // Handle client-only initial online state
+  useEffect(() => {
+    setIsOnline(navigator.onLine);
+  }, []);
+
   // Save store to local storage helper
   useEffect(() => {
-    localStorage.setItem("npc_store_react", JSON.stringify(store));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("npc_store_react", JSON.stringify(store));
+    }
   }, [store]);
 
   // Handle network state listeners
