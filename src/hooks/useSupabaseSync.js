@@ -22,6 +22,22 @@ const defaultBaseline = {
   syncQueue: []
 };
 
+// Coordinate dictionary for geocoding registrations
+export const stateCoordinates = {
+  "Lagos": [6.5244, 3.3792],
+  "Kano": [12.0022, 8.5919],
+  "Abuja FCT": [9.0765, 7.3986],
+  "Abuja": [9.0765, 7.3986],
+  "Rivers": [4.8156, 7.0498],
+  "Oyo": [7.8430, 3.9314],
+  "Kaduna": [10.5105, 7.4165],
+  "Anambra": [6.2209, 7.0670],
+  "Enugu": [6.4584, 7.5464],
+  "Edo": [6.3350, 5.6037],
+  "Delta": [5.8904, 5.6800],
+  "Ogun": [7.1604, 3.3483]
+};
+
 export function useSupabaseSync() {
   const [store, setStore] = useState(() => {
     if (typeof window === 'undefined') return defaultBaseline;
@@ -47,6 +63,10 @@ export function useSupabaseSync() {
   const [isOnline, setIsOnline] = useState(true);
   const [syncStatus, setSyncStatus] = useState("Offline (Local Mode)");
   const [syncActive, setSyncActive] = useState(false);
+  
+  // Auth states
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   // Handle client-only initial online state
   useEffect(() => {
@@ -94,6 +114,34 @@ export function useSupabaseSync() {
       setSyncStatus(isOnline ? "Offline (Local Mode)" : "Offline Mode");
     }
   }, [store.supabaseUrl, store.supabaseKey, isOnline]);
+
+  // Track Auth session
+  useEffect(() => {
+    if (supabaseClient) {
+      setAuthLoading(true);
+      
+      // Get current session
+      supabaseClient.auth.getSession().then(({ data: { session } }) => {
+        setUser(session?.user ?? null);
+        setAuthLoading(false);
+      }).catch(() => {
+        setAuthLoading(false);
+      });
+
+      // Listen for changes
+      const { data: { subscription } } = supabaseClient.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null);
+        setAuthLoading(false);
+      });
+
+      return () => {
+        if (subscription) subscription.unsubscribe();
+      };
+    } else {
+      setUser(null);
+      setAuthLoading(false);
+    }
+  }, [supabaseClient]);
 
   // Load Remote Records from Supabase
   const loadRemoteRecords = useCallback(async () => {
@@ -181,7 +229,7 @@ export function useSupabaseSync() {
     }
   }, [supabaseClient, isOnline, syncOfflineQueue, loadRemoteRecords]);
 
-  // Actions
+  // Action methods
   const addRecord = async (record) => {
     const isBirth = record.type === "Birth";
 
@@ -237,11 +285,38 @@ export function useSupabaseSync() {
     setSyncActive(false);
   };
 
+  // Auth Operations
+  const signIn = async (email, password) => {
+    if (!supabaseClient) throw new Error("Supabase Database URL & Key are required inside System Settings before signing in.");
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    return data;
+  };
+
+  const signUp = async (email, password) => {
+    if (!supabaseClient) throw new Error("Supabase Database URL & Key are required inside System Settings before signing up.");
+    const { data, error } = await supabaseClient.auth.signUp({ email, password });
+    if (error) throw error;
+    return data;
+  };
+
+  const signOut = async () => {
+    if (!supabaseClient) return;
+    const { error } = await supabaseClient.auth.signOut();
+    if (error) throw error;
+    setUser(null);
+  };
+
   return {
     store,
     isOnline,
     syncStatus,
     syncActive,
+    user,
+    authLoading,
+    signIn,
+    signUp,
+    signOut,
     addRecord,
     saveSupabaseConfig,
     resetStore,

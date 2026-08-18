@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { AppProvider, useApp } from '../context/AppContext';
 import Link from 'next/link';
@@ -16,7 +16,8 @@ import {
   Clock, 
   User, 
   Download, 
-  CheckCircle 
+  CheckCircle,
+  LogOut
 } from 'lucide-react';
 import "./globals.css";
 
@@ -26,6 +27,9 @@ function AppShell({ children }) {
     isOnline,
     syncStatus,
     syncActive,
+    user,
+    authLoading,
+    signOut,
     showBirthModal, setShowBirthModal,
     showDeathModal, setShowDeathModal,
     showExportModal, setShowExportModal,
@@ -55,6 +59,41 @@ function AppShell({ children }) {
     return () => document.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
+  // Auth routing protection
+  useEffect(() => {
+    if (!authLoading) {
+      const isAuthPage = pathname === '/login' || pathname === '/signup';
+      if (!user && !isAuthPage) {
+        router.push('/login');
+      } else if (user && isAuthPage) {
+        router.push('/');
+      }
+    }
+  }, [user, authLoading, pathname, router]);
+
+  if (authLoading) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-background relative overflow-hidden">
+        <div className="mesh-gradient-glow" id="mesh-glow"></div>
+        <div className="glass-panel p-8 rounded-2xl flex flex-col items-center gap-4 relative z-10">
+          <div className="w-12 h-12 rounded-full border-4 border-primary-container/20 border-t-primary-container animate-spin"></div>
+          <span className="font-display font-bold text-sm text-primary-container tracking-wider uppercase">Loading NPC Portal...</span>
+        </div>
+      </div>
+    );
+  }
+
+  const isAuthPage = pathname === '/login' || pathname === '/signup';
+
+  if (isAuthPage) {
+    return (
+      <div className="min-h-screen w-screen relative flex items-center justify-center p-4">
+        <div className="mesh-gradient-glow" id="mesh-glow"></div>
+        {children}
+      </div>
+    );
+  }
+
   const getPageTitle = () => {
     if (pathname === '/') return 'NPC Population Analysis Dashboard';
     if (pathname === '/registrations') return 'NPC Vital Registrations Portal';
@@ -63,6 +102,15 @@ function AppShell({ children }) {
     if (pathname === '/settings') return 'System Settings';
     if (pathname.startsWith('/insight-details')) return 'Analysis Insight Detail View';
     return 'NPC Portal';
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      router.push('/login');
+    } catch (e) {
+      alert("Sign out failed: " + e.message);
+    }
   };
 
   return (
@@ -103,13 +151,20 @@ function AppShell({ children }) {
           })}
         </nav>
 
-        <div className="px-4 mt-auto">
+        <div className="px-4 mt-auto space-y-3">
           <button 
             onClick={() => setShowBirthModal(true)}
             className="w-full py-3 px-4 bg-primary-container text-on-primary font-bold rounded-xl flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-[0_0_20px_rgba(0,242,254,0.3)] active:scale-95"
           >
             <Plus size={16} />
             <span className="text-sm">New Registration</span>
+          </button>
+          <button 
+            onClick={handleLogout}
+            className="w-full py-2.5 px-4 bg-white/5 hover:bg-error-container/20 hover:text-error text-on-surface-variant border border-white/10 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 text-xs font-semibold"
+          >
+            <LogOut size={14} />
+            <span>Sign Out</span>
           </button>
         </div>
       </aside>
@@ -149,8 +204,12 @@ function AppShell({ children }) {
               <Clock size={18} className="cursor-pointer hover:text-primary-container transition-all" onClick={() => router.push('/settings')} />
               <User size={18} className="cursor-pointer hover:text-primary-container transition-all" />
             </div>
-            <div className="w-10 h-10 rounded-full border-2 border-primary-container/30 overflow-hidden cursor-pointer" onClick={() => router.push('/insight-details/Lagos')}>
-              <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj80aUYfRKHfbwdI2ZaC0Aet3Y7SXSxPkTxAdAzkdA3Fwh8FGxWq1f-ZXMGHUrFrmZrr3eaGAkkWQyz_oZaiGfksjyJs-zloPADBrGlLUIsl9Gs5Ed89Z2BuEGVaZhoH0jMA19LzxIwWEIsAd553rNa9r7kHvA4rM0zIjKsyAv9L8ZXT7BOzrUlnkuaoB23xzmM9WNbFokUJhu7qCz0eVwSEbjDFOJib-1DWLH2IU3bLgVB8TrNTUPz0Hi1_l5CFHiJdcjvCBWEGnv" alt="User Avatar" />
+            {/* Dynamic User Profile Indicator */}
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-on-surface-variant font-medium hidden md:inline">{user?.email || "Local Operator"}</span>
+              <div className="w-10 h-10 rounded-full border-2 border-primary-container/30 overflow-hidden cursor-pointer" onClick={() => router.push('/settings')}>
+                <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj80aUYfRKHfbwdI2ZaC0Aet3Y7SXSxPkTxAdAzkdA3Fwh8FGxWq1f-ZXMGHUrFrmZrr3eaGAkkWQyz_oZaiGfksjyJs-zloPADBrGlLUIsl9Gs5Ed89Z2BuEGVaZhoH0jMA19LzxIwWEIsAd553rNa9r7kHvA4rM0zIjKsyAv9L8ZXT7BOzrUlnkuaoB23xzmM9WNbFokUJhu7qCz0eVwSEbjDFOJib-1DWLH2IU3bLgVB8TrNTUPz0Hi1_l5CFHiJdcjvCBWEGnv" alt="User Avatar" />
+              </div>
             </div>
           </div>
         </header>
