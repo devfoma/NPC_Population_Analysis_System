@@ -31,7 +31,7 @@ export default function Login() {
     <div className="w-full max-w-md glass-card rounded-2xl p-8 space-y-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 z-10">
       <div className="text-center space-y-4">
         <div className="w-24 h-24 rounded-full bg-white/10 border border-white/10 flex items-center justify-center p-4 mx-auto shadow-[0_0_25px_rgba(0,242,254,0.4)]">
-          <img src="/logo.png" alt="NPC Logo" className="w-full h-full object-contain" />
+          <img src="/logo.png" alt="NPC Logo" className="w-full h-full object-cover rounded-full" />
         </div>
         <h2 className="text-2xl font-extrabold text-primary-container font-display tracking-tight uppercase">NPC Command Login</h2>
         <p className="text-xs text-on-surface-variant/80 mt-1">Authenticate to access National Demographics portal.</p>
