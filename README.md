@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# NPC Population Analysis System (National Data Command Portal)
 
-## Getting Started
+A modern, high-fidelity demographic command center and vital registry dashboard for the **National Population Commission (NPC)**. Built with React, Next.js App Router, Tailwind CSS, Leaflet Maps, and Supabase database synchronization.
 
-First, run the development server:
+---
 
+## 🚀 Key Features
+
+* **Multi-Page Routing (Next.js App Router):** Modular page separation for the Dashboard, vital Registrations, Migration records, mathematical Growth Projections, and System Settings.
+* **Supabase Authentication:** Secure operator nodes sign-up and sign-in gates. Allows operators to customize their profile metadata (display name and base64-encoded profile picture).
+* **Offline-First Synchronization:** Local state buffers queue new birth and death records during internet connection drops, automatically batching and syncing them to primary Supabase cloud nodes once connection returns.
+* **Geocoded Live Map Widget:** An interactive Leaflet map of Nigeria featuring glowing neon location pin markers that scale in radius and count dynamically based on database registry submissions.
+* **Dynamic LGA Breakdowns:** State Details audit views compiling live statistics aggregated and calculated dynamically by Local Government Areas (LGAs) for all 36 states and Abuja FCT.
+* **Mathematical Projection Engine:** Run exponential growth path simulations using base/target year models and custom assumed growth rates.
+
+---
+
+## 🛠️ Tech Stack
+
+* **Frontend Framework:** Next.js (App Router)
+* **Styling:** Tailwind CSS (Custom Glassmorphism themes & glow animations)
+* **Icons:** Lucide React
+* **Database & Auth:** Supabase Client SDK
+* **Mapping:** Leaflet & React Leaflet
+* **Charts:** Chart.js & React-Chartjs-2
+
+---
+
+## ⚙️ Project Configuration & Installation
+
+### 1. Prerequisites
+Ensure you have [Node.js](https://nodejs.org/) installed on your machine.
+
+### 2. Install Dependencies
+Clone the repository, navigate to the folder, and run:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Set Up Supabase Database Schema
+Log in to your **Supabase Dashboard**, open your project, go to the **SQL Editor**, and execute the script inside **[schema.sql](schema.sql)**.
+*This creates the `registrations` table and configures Row Level Security (RLS) policies allowing public select and inserts.*
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### 4. Configure Environment Variables
+Create a `.env.local` file in the root directory and add your Supabase credentials:
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 💻 Local Development
 
-To learn more about Next.js, take a look at the following resources:
+Run the Next.js development server:
+```bash
+npm run dev
+```
+Open **[http://localhost:3000](http://localhost:3000)** in your browser to inspect and run the portal locally.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+To test the production build:
+```bash
+npm run build
+npm run start
+```
