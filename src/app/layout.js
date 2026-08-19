@@ -236,7 +236,7 @@ function AppShell({ children }) {
           </div>
 
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-4 text-on-surface-variant">
+            <div className="items-center gap-4 text-on-surface-variant hidden sm:flex">
               <Bell size={18} className="cursor-pointer hover:text-primary-container transition-all" onClick={() => alert("Notification center: Regional Node databases synchronized successfully.")} />
               <Clock size={18} className="cursor-pointer hover:text-primary-container transition-all" onClick={() => router.push('/settings')} />
               <User size={18} className="cursor-pointer hover:text-primary-container transition-all" />
@@ -262,7 +262,7 @@ function AppShell({ children }) {
       {/* 1. BIRTH REGISTRATION MODAL */}
       {showBirthModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm">
-          <div className="glass-card w-full max-w-2xl rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10">
+          <div className="glass-card w-full max-w-2xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 max-h-[90vh] overflow-y-auto">
             <div className="px-8 py-6 border-b border-white/10 flex justify-between items-start">
               <div>
                 <h3 className="text-lg font-bold text-primary-container font-display">New Birth Registration</h3>
@@ -270,7 +270,7 @@ function AppShell({ children }) {
               </div>
               <button onClick={() => setShowBirthModal(false)} className="p-2 rounded-full hover:bg-white/10 text-on-surface-variant transition-colors">✕</button>
             </div>
-            <form className="p-8 space-y-6" onSubmit={handleBirthSubmit}>
+            <form className="p-4 sm:p-8 space-y-6" onSubmit={handleBirthSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="col-span-2">
                   <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">Child's Full Name</label>
@@ -325,7 +325,7 @@ function AppShell({ children }) {
       {/* 2. DEATH REGISTRATION MODAL */}
       {showDeathModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm">
-          <div className="glass-card w-full max-w-2xl rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10">
+          <div className="glass-card w-full max-w-2xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 max-h-[90vh] overflow-y-auto">
             <div className="px-8 py-6 border-b border-white/10 flex justify-between items-start">
               <div>
                 <h3 className="text-lg font-bold text-primary-container font-display">New Death Registration</h3>
@@ -333,7 +333,7 @@ function AppShell({ children }) {
               </div>
               <button onClick={() => setShowDeathModal(false)} className="p-2 rounded-full hover:bg-white/10 text-on-surface-variant transition-colors">✕</button>
             </div>
-            <form className="p-8 space-y-6" onSubmit={handleDeathSubmit}>
+            <form className="p-4 sm:p-8 space-y-6" onSubmit={handleDeathSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="col-span-2">
                   <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">Citizen Name</label>
