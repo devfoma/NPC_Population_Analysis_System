@@ -21,6 +21,15 @@ import {
 } from 'lucide-react';
 import "./globals.css";
 
+const NIGERIAN_STATES = [
+  "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", 
+  "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "Gombe", "Imo", 
+  "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara", "Lagos", 
+  "Nasarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", 
+  "Sokoto", "Taraba", "Yobe", "Zamfara", "Abuja FCT"
+].sort();
+
+
 function AppShell({ children }) {
   const {
     store,
@@ -247,9 +256,9 @@ function AppShell({ children }) {
                   <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">State of Birth</label>
                   <select required value={birthForm.state} onChange={(e) => setBirthForm({...birthForm, state: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary-container/50 transition-all">
                     <option className="bg-surface-container" value="">Select State</option>
-                    <option className="bg-surface-container">Lagos</option>
-                    <option className="bg-surface-container">Kano</option>
-                    <option className="bg-surface-container">Abuja FCT</option>
+                    {NIGERIAN_STATES.map(st => (
+                      <option key={st} className="bg-surface-container" value={st}>{st} State</option>
+                    ))}
                   </select>
                 </div>
                 <div>
@@ -291,9 +300,9 @@ function AppShell({ children }) {
                   <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">State of Occurrence</label>
                   <select required value={deathForm.state} onChange={(e) => setDeathForm({...deathForm, state: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary-container/50 transition-all">
                     <option className="bg-surface-container" value="">Select State</option>
-                    <option className="bg-surface-container">Lagos</option>
-                    <option className="bg-surface-container">Kano</option>
-                    <option className="bg-surface-container">Abuja FCT</option>
+                    {NIGERIAN_STATES.map(st => (
+                      <option key={st} className="bg-surface-container" value={st}>{st} State</option>
+                    ))}
                   </select>
                 </div>
                 <div>
