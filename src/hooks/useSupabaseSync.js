@@ -17,8 +17,8 @@ const defaultBaseline = {
     { nin: "211-778-402", name: "Grace Adebayo", type: "Birth", date: "2026-07-21 19:30", location: "Ibadan Health Center", status: "Verified" },
     { nin: "990-234-118", name: "Mustafa Idris", type: "Death", date: "2026-07-21 16:10", location: "Port Harcourt Med", status: "Verified" }
   ],
-  supabaseUrl: "https://ermkzvwqvfbmhohumyks.supabase.co",
-  supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVybWt6dndxdmZibWhvaHVteWtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxMzQ3MzQsImV4cCI6MjEwMjcxMDczNH0.ha0Zb9uMwcaFT1Ilec1BDs-cB7zFfLZGwO5zveVjc0A",
+  supabaseUrl: "",
+  supabaseKey: "",
   syncQueue: []
 };
 
@@ -96,9 +96,12 @@ export function useSupabaseSync() {
 
   // Initialize Supabase Client
   useEffect(() => {
-    if (store.supabaseUrl && store.supabaseKey && isOnline) {
+    const url = store.supabaseUrl || process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = store.supabaseKey || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (url && key && isOnline) {
       try {
-        const client = createClient(store.supabaseUrl, store.supabaseKey);
+        const client = createClient(url, key);
         setSupabaseClient(client);
         setSyncStatus("Online (Connected)");
         setSyncActive(true);
@@ -287,15 +290,23 @@ export function useSupabaseSync() {
 
   // Auth Operations
   const signIn = async (email, password) => {
-    if (!supabaseClient) throw new Error("Supabase Database URL & Key are required inside System Settings before signing in.");
+    if (!supabaseClient) throw new Error("Supabase connection is not initialized. Please configure settings or env credentials.");
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if (error) throw error;
     return data;
   };
 
-  const signUp = async (email, password) => {
-    if (!supabaseClient) throw new Error("Supabase Database URL & Key are required inside System Settings before signing up.");
-    const { data, error } = await supabaseClient.auth.signUp({ email, password });
+  const signUp = async (email, password, displayName) => {
+    if (!supabaseClient) throw new Error("Supabase connection is not initialized. Please configure settings or env credentials.");
+    const { data, error } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          display_name: displayName
+        }
+      }
+    });
     if (error) throw error;
     return data;
   };

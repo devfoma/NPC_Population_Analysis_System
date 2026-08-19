@@ -187,15 +187,6 @@ function AppShell({ children }) {
                 placeholder="Search census database..."
               />
             </div>
-            {/* Sync indicator pill */}
-            <div className={`flex items-center gap-2 px-3 py-1 border rounded-full text-xs font-semibold select-none transition-all ${
-              syncActive && isOnline
-                ? 'bg-green-500/10 border-green-500/30 text-green-400'
-                : 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400'
-            }`}>
-              <span className={`w-2 h-2 rounded-full ${syncActive && isOnline ? 'bg-green-400 animate-pulse' : 'bg-yellow-400 animate-ping'}`}></span>
-              <span>{syncStatus}</span>
-            </div>
           </div>
 
           <div className="flex items-center gap-6">
@@ -206,7 +197,7 @@ function AppShell({ children }) {
             </div>
             {/* Dynamic User Profile Indicator */}
             <div className="flex items-center gap-3">
-              <span className="text-xs text-on-surface-variant font-medium hidden md:inline">{user?.email || "Local Operator"}</span>
+              <span className="text-xs text-on-surface-variant font-medium hidden md:inline">{user?.user_metadata?.display_name || user?.email || "Local Operator"}</span>
               <div className="w-10 h-10 rounded-full border-2 border-primary-container/30 overflow-hidden cursor-pointer" onClick={() => router.push('/settings')}>
                 <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj80aUYfRKHfbwdI2ZaC0Aet3Y7SXSxPkTxAdAzkdA3Fwh8FGxWq1f-ZXMGHUrFrmZrr3eaGAkkWQyz_oZaiGfksjyJs-zloPADBrGlLUIsl9Gs5Ed89Z2BuEGVaZhoH0jMA19LzxIwWEIsAd553rNa9r7kHvA4rM0zIjKsyAv9L8ZXT7BOzrUlnkuaoB23xzmM9WNbFokUJhu7qCz0eVwSEbjDFOJib-1DWLH2IU3bLgVB8TrNTUPz0Hi1_l5CFHiJdcjvCBWEGnv" alt="User Avatar" />
               </div>

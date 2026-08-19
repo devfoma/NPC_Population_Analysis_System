@@ -8,6 +8,7 @@ import Link from 'next/link';
 export default function Signup() {
   const { signUp } = useApp();
   const router = useRouter();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,8 +21,9 @@ export default function Signup() {
     setErrorMsg('');
     setSuccessMsg('');
     try {
-      await signUp(email, password);
+      await signUp(email, password, name);
       setSuccessMsg("Verification link dispatched. Verify your email to complete registration.");
+      setName('');
       setEmail('');
       setPassword('');
     } catch (err) {
@@ -51,6 +53,17 @@ export default function Signup() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">Operator Display Name</label>
+          <input 
+            required 
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white outline-none focus:ring-2 focus:ring-primary-container/50 focus:border-primary-container transition-all text-sm" 
+            placeholder="Chinedu Okafor"
+          />
+        </div>
         <div>
           <label className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">Email Address</label>
           <input 
