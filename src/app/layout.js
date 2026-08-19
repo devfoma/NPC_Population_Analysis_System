@@ -20,6 +20,8 @@ import {
   LogOut
 } from 'lucide-react';
 import "./globals.css";
+import { NIGERIAN_STATES_LGAS } from '../context/lgaRegistry';
+
 
 const NIGERIAN_STATES = [
   "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", 
@@ -263,7 +265,18 @@ function AppShell({ children }) {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">LGA</label>
-                  <input required value={birthForm.lga} onChange={(e) => setBirthForm({...birthForm, lga: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary-container/50 transition-all" placeholder="Enter LGA" />
+                  <select 
+                    required 
+                    disabled={!birthForm.state}
+                    value={birthForm.lga} 
+                    onChange={(e) => setBirthForm({...birthForm, lga: e.target.value})} 
+                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary-container/50 transition-all disabled:opacity-50"
+                  >
+                    <option className="bg-surface-container" value="">Select LGA</option>
+                    {birthForm.state && NIGERIAN_STATES_LGAS[birthForm.state]?.map(lga => (
+                      <option key={lga} className="bg-surface-container" value={lga}>{lga}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <div className="flex justify-end gap-4 pt-4">
@@ -307,7 +320,18 @@ function AppShell({ children }) {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">LGA</label>
-                  <input required value={deathForm.lga} onChange={(e) => setDeathForm({...deathForm, lga: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary-container/50 transition-all" placeholder="Enter LGA" />
+                  <select 
+                    required 
+                    disabled={!deathForm.state}
+                    value={deathForm.lga} 
+                    onChange={(e) => setDeathForm({...deathForm, lga: e.target.value})} 
+                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary-container/50 transition-all disabled:opacity-50"
+                  >
+                    <option className="bg-surface-container" value="">Select LGA</option>
+                    {deathForm.state && NIGERIAN_STATES_LGAS[deathForm.state]?.map(lga => (
+                      <option key={lga} className="bg-surface-container" value={lga}>{lga}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">Cause of Death</label>
