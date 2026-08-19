@@ -39,7 +39,8 @@ function AppShell({ children }) {
     deathForm, setDeathForm,
     handleBirthSubmit,
     handleDeathSubmit,
-    searchQuery, setSearchQuery
+    searchQuery, setSearchQuery,
+    triggerSuccessAlert
   } = useApp();
 
   const pathname = usePathname();
