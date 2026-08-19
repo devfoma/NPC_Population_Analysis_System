@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { AppProvider, useApp } from '../context/AppContext';
 import Link from 'next/link';
@@ -17,7 +17,9 @@ import {
   User, 
   Download, 
   CheckCircle,
-  LogOut
+  LogOut,
+  Menu,
+  X
 } from 'lucide-react';
 import "./globals.css";
 import { NIGERIAN_STATES_LGAS } from '../context/lgaRegistry';
@@ -56,6 +58,11 @@ function AppShell({ children }) {
 
   const pathname = usePathname();
   const router = useRouter();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   // Dynamic parallax background effect
   useEffect(() => {
@@ -129,16 +136,32 @@ function AppShell({ children }) {
     <div className="flex min-h-screen relative z-10">
       <div className="mesh-gradient-glow" id="mesh-glow"></div>
 
+      {/* Mobile Drawer Backdrop */}
+      {mobileMenuOpen && (
+        <div 
+          onClick={() => setMobileMenuOpen(false)}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-45 lg:hidden"
+        />
+      )}
+
       {/* Floating Left Sidebar */}
-      <aside className="fixed left-4 top-4 bottom-4 w-64 rounded-xl bg-white/10 backdrop-blur-xl border-r border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)] flex flex-col py-6 z-50">
-        <div className="px-6 mb-10 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-white/10 border border-white/10 flex items-center justify-center p-2 shadow-[0_0_15px_rgba(0,242,254,0.3)]">
-            <img src="/logo.png" alt="NPC Logo" className="w-full h-full object-cover rounded-full" />
+      <aside className={`fixed left-4 top-4 bottom-4 w-64 rounded-xl bg-white/10 backdrop-blur-xl border-r border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)] flex flex-col py-6 z-50 transition-transform duration-300 lg:translate-x-0 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-[110%]'}`}>
+        <div className="px-6 mb-10 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-white/10 border border-white/10 flex items-center justify-center p-2 shadow-[0_0_15px_rgba(0,242,254,0.3)]">
+              <img src="/logo.png" alt="NPC Logo" className="w-full h-full object-cover rounded-full" />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-display text-xl font-extrabold text-primary-container tracking-tighter leading-none">NPC Portal</span>
+              <span className="font-body text-[10px] text-on-surface-variant/70 mt-1">National Data Command</span>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <span className="font-display text-xl font-extrabold text-primary-container tracking-tighter leading-none">NPC Portal</span>
-            <span className="font-body text-[10px] text-on-surface-variant/70 mt-1">National Data Command</span>
-          </div>
+          <button 
+            onClick={() => setMobileMenuOpen(false)} 
+            className="lg:hidden p-1.5 rounded-full hover:bg-white/10 text-on-surface-variant"
+          >
+            <X size={18} />
+          </button>
         </div>
 
         <nav className="flex-1 space-y-2 px-2">
@@ -187,15 +210,21 @@ function AppShell({ children }) {
       </aside>
 
       {/* Main Content Pane */}
-      <div className="flex-1 ml-72 mr-6 min-h-screen flex flex-col">
+      <div className="flex-1 ml-4 mr-4 lg:ml-72 lg:mr-6 min-h-screen flex flex-col">
         
         {/* Top Header */}
-        <header className="flex justify-between items-center w-full px-8 h-20 bg-white/5 backdrop-blur-lg border-b border-white/10 sticky top-0 z-40">
-          <div className="flex items-center gap-6 flex-1">
-            <h1 className="font-display text-xl font-bold text-primary-container">
+        <header className="flex justify-between items-center w-full px-4 lg:px-8 h-20 bg-white/5 backdrop-blur-lg border-b border-white/10 sticky top-0 z-40">
+          <div className="flex items-center gap-4 lg:gap-6 flex-1 min-w-0">
+            <button 
+              onClick={() => setMobileMenuOpen(true)}
+              className="lg:hidden p-2 rounded-lg hover:bg-white/10 text-primary-container transition-all"
+            >
+              <Menu size={20} />
+            </button>
+            <h1 className="font-display text-lg lg:text-xl font-bold text-primary-container truncate min-w-0">
               {getPageTitle()}
             </h1>
-            <div className="relative w-80 group">
+            <div className="relative w-80 group hidden md:block">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50" />
               <input 
                 value={searchQuery}
