@@ -11,10 +11,44 @@ export default function InsightDetail({ params }) {
   const selectedState = resolvedParams.state;
 
   const stateDetails = {
-    Kano: { lga: 44, density: "Extreme (Agrarian Hub)", hubs: "Kano Municipal, Fagge, Gwale" },
-    Lagos: { lga: 20, density: "Maximum (Urban Epicenter)", hubs: "Ikeja, Lekki, Surulere" },
-    Abuja: { lga: 6, density: "High (Administrative Capital)", hubs: "Garki, Wuse, Asokoro" },
-    "Abuja FCT": { lga: 6, density: "High (Administrative Capital)", hubs: "Garki, Wuse, Asokoro" }
+    "Abia": { lga: 17, density: "Medium (Commercial Node)", hubs: "Aba North, Aba South, Umuahia" },
+    "Adamawa": { lga: 21, density: "Agricultural Hub", hubs: "Yola, Mubi" },
+    "Akwa Ibom": { lga: 31, density: "High (Coastal Oil Hub)", hubs: "Uyo, Eket, Ikot Ekpene" },
+    "Anambra": { lga: 21, density: "High Density (Industrial Hub)", hubs: "Onitsha, Awka, Nnewi" },
+    "Bauchi": { lga: 20, density: "Agricultural/Transit Hub", hubs: "Bauchi, Katagum" },
+    "Bayelsa": { lga: 8, density: "Low (Coastal Wetland)", hubs: "Yenagoa, Brass" },
+    "Benue": { lga: 23, density: "Agrarian Belt (Food Basket)", hubs: "Makurdi, Gboko" },
+    "Borno": { lga: 27, density: "Medium (Frontier Node)", hubs: "Maiduguri, Bama" },
+    "Cross River": { lga: 18, density: "Medium (Forest/Maritime)", hubs: "Calabar, Ikom" },
+    "Delta": { lga: 25, density: "High (Deltaic Oil Hub)", hubs: "Asaba, Warri, Sapele" },
+    "Ebonyi": { lga: 13, density: "Medium (Agrarian)", hubs: "Abakaliki, Afikpo" },
+    "Edo": { lga: 18, density: "High (Transit/Cultural Hub)", hubs: "Benin City, Auchi" },
+    "Ekiti": { lga: 16, density: "Medium Density (Intellectual)", hubs: "Ado-Ekiti, Ikere" },
+    "Enugu": { lga: 17, density: "High (Coal City Hub)", hubs: "Enugu, Nsukka" },
+    "Gombe": { lga: 11, density: "Medium (Agrarian)", hubs: "Gombe, Akko" },
+    "Imo": { lga: 27, density: "High (Commercial Heartland)", hubs: "Owerri, Orlu" },
+    "Jigawa": { lga: 27, density: "Medium (Agricultural Hub)", hubs: "Dutse, Hadejia" },
+    "Kaduna": { lga: 23, density: "High (Northern Trade Hub)", hubs: "Kaduna, Zaria" },
+    "Kano": { lga: 44, density: "Extreme (Agrarian Hub)", hubs: "Kano Municipal, Fagge, Gwale" },
+    "Katsina": { lga: 34, density: "High Density (Agrarian)", hubs: "Katsina, Funtua" },
+    "Kebbi": { lga: 21, density: "Medium (Agrarian/Riverine)", hubs: "Birnin Kebbi, Argungu" },
+    "Kogi": { lga: 21, density: "Confluence Transit Node", hubs: "Lokoja, Okene" },
+    "Kwara": { lga: 16, density: "Medium Density Gateway", hubs: "Ilorin, Offa" },
+    "Lagos": { lga: 20, density: "Maximum (Urban Epicenter)", hubs: "Ikeja, Lekki, Surulere" },
+    "Nasarawa": { lga: 13, density: "High Density (FCT Border)", hubs: "Lafia, Karu" },
+    "Niger": { lga: 25, density: "Agrarian Hydro Node", hubs: "Minna, Bida, Suleja" },
+    "Ogun": { lga: 20, density: "High (Industrial Corridor)", hubs: "Abeokuta, Ota, Sagamu" },
+    "Ondo": { lga: 18, density: "Medium (Agrarian/Maritime)", hubs: "Akure, Ondo, Owo" },
+    "Osun": { lga: 30, density: "High (Cultural Heartland)", hubs: "Osogbo, Ife, Ilesa" },
+    "Oyo": { lga: 33, density: "High (Transit/Trade Hub)", hubs: "Ibadan, Ogbomosho" },
+    "Plateau": { lga: 17, density: "Medium (Highland Node)", hubs: "Jos, Bukuru" },
+    "Rivers": { lga: 23, density: "Maximum (Industrial Port)", hubs: "Port Harcourt, Obio/Akpor" },
+    "Sokoto": { lga: 23, density: "Medium (Saddiq Heartland)", hubs: "Sokoto, Wamako" },
+    "Taraba": { lga: 16, density: "Low Density (Savannah)", hubs: "Jalingo, Wukari" },
+    "Yobe": { lga: 17, density: "Medium Density (Agrarian)", hubs: "Damaturu, Potiskum" },
+    "Zamfara": { lga: 14, density: "Medium Density (Mineral Node)", hubs: "Gusau, Kaura Namoda" },
+    "Abuja FCT": { lga: 6, density: "High (Administrative Capital)", hubs: "Garki, Wuse, Asokoro" },
+    "Abuja": { lga: 6, density: "High (Administrative Capital)", hubs: "Garki, Wuse, Asokoro" }
   };
   
   const activeDetail = stateDetails[selectedState] || { lga: "Varies", density: "Regional Node", hubs: "Local hubs" };

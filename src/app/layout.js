@@ -131,9 +131,14 @@ function AppShell({ children }) {
 
       {/* Floating Left Sidebar */}
       <aside className="fixed left-4 top-4 bottom-4 w-64 rounded-xl bg-white/10 backdrop-blur-xl border-r border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)] flex flex-col py-6 z-50">
-        <div className="px-6 mb-10 flex flex-col">
-          <span className="font-display text-2xl font-extrabold text-primary-container tracking-tighter">NPC Portal</span>
-          <span className="font-body text-xs text-on-surface-variant/70 -mt-1">National Data Command</span>
+        <div className="px-6 mb-10 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-white/10 border border-white/10 flex items-center justify-center p-2 shadow-[0_0_15px_rgba(0,242,254,0.3)]">
+            <img src="/logo.png" alt="NPC Logo" className="w-full h-full object-contain" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-display text-xl font-extrabold text-primary-container tracking-tighter leading-none">NPC Portal</span>
+            <span className="font-body text-[10px] text-on-surface-variant/70 mt-1">National Data Command</span>
+          </div>
         </div>
 
         <nav className="flex-1 space-y-2 px-2">
