@@ -17,8 +17,8 @@ const defaultBaseline = {
     { nin: "211-778-402", name: "Grace Adebayo", type: "Birth", date: "2026-07-21 19:30", location: "Ibadan Health Center", status: "Verified" },
     { nin: "990-234-118", name: "Mustafa Idris", type: "Death", date: "2026-07-21 16:10", location: "Port Harcourt Med", status: "Verified" }
   ],
-  supabaseUrl: "",
-  supabaseKey: "",
+  supabaseUrl: "https://ermkzvwqvfbmhohumyks.supabase.co",
+  supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVybWt6dndxdmZibWhvaHVteWtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxMzQ3MzQsImV4cCI6MjEwMjcxMDczNH0.ha0Zb9uMwcaFT1Ilec1BDs-cB7zFfLZGwO5zveVjc0A",
   syncQueue: []
 };
 
