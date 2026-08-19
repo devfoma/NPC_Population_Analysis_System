@@ -311,6 +311,16 @@ export function useSupabaseSync() {
     return data;
   };
 
+  const updateProfile = async (updates) => {
+    if (!supabaseClient) throw new Error("Supabase is not configured.");
+    const { data, error } = await supabaseClient.auth.updateUser({
+      data: updates
+    });
+    if (error) throw error;
+    setUser(data.user);
+    return data;
+  };
+
   const signOut = async () => {
     if (!supabaseClient) return;
     const { error } = await supabaseClient.auth.signOut();
@@ -328,6 +338,7 @@ export function useSupabaseSync() {
     signIn,
     signUp,
     signOut,
+    updateProfile,
     addRecord,
     saveSupabaseConfig,
     resetStore,
